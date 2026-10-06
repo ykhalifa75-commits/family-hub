@@ -116,9 +116,23 @@ body.dark .bar{background:#1c3345}
 .moneyTypeButtons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:5px}.moneyTypeBtn{border:1px solid #dbe5ec;background:#fff;border-radius:12px;padding:12px 7px;font:inherit;font-weight:800;cursor:pointer;color:#203044}.moneyTypeBtn.active{background:#147c94;color:#fff;border-color:#147c94;box-shadow:0 5px 14px rgba(20,124,148,.2)}@media(max-width:520px){.moneyTypeButtons{grid-template-columns:1fr}.moneyTypeBtn{padding:10px}}
 
 .taskToolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}.taskFilter{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 14px;cursor:pointer;font-weight:800}.taskFilter.active{background:var(--teal);color:#fff;border-color:var(--teal)}.taskStatus{font-size:12px;font-weight:800;padding:5px 9px;border-radius:999px;background:#eef6f8}.taskDone{opacity:.72}.taskDone b{text-decoration:line-through}.taskOwnerBtns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.taskOwnerBtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 6px;cursor:pointer;font-weight:800}.taskOwnerBtn.active{background:var(--teal)!important;color:#fff!important;border-color:var(--teal)!important;box-shadow:0 4px 12px rgba(14,116,144,.18)}.taskOwnerBtn .ownerName{display:inline-block;color:inherit!important;margin-inline-start:4px}@media(max-width:600px){.taskOwnerBtns{grid-template-columns:repeat(2,1fr)}}
+.profilePhoto{width:54px;height:54px;border-radius:18px;object-fit:cover;display:block}
+.miniPhoto{width:28px;height:28px;border-radius:9px;object-fit:cover;display:block}
+.profilePhotoBtn{width:86px;height:86px;border-radius:24px;object-fit:cover;margin:auto;display:block;border:1px solid var(--line)}
+.avatarChoices{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:12px 0}
+.avatarChoice{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 5px;font-size:27px;cursor:pointer}
+.avatarChoice.active{outline:3px solid #64ccc5}
+.uploadAvatarLabel{display:block;border:1px dashed #9bb0c2;border-radius:14px;padding:13px;text-align:center;cursor:pointer;margin-top:12px}
+@media(max-width:520px){.avatarChoices{grid-template-columns:repeat(3,1fr)}}
+/* Privacy lock: never expose dashboard before authentication */
+body.authLocked .app,body.authLocked .fab{visibility:hidden!important;pointer-events:none!important}
+body.authLocked{background:linear-gradient(145deg,#0d2539,#176b87);min-height:100vh}
+body.authLocked .loginGate{display:grid}
+body.authLocked #pinModal{background:linear-gradient(145deg,#0d2539,#176b87);z-index:220}
+body.authLocked #pinModal .modalbox{box-shadow:0 30px 80px rgba(0,0,0,.28)}
 </style>
 </head>
-<body>
+<body class="authLocked">
 <div class="loginGate" id="loginGate">
  <div class="loginCard">
   <div class="loginLogo"><div class="mark">🏡</div><h1>Family Hub</h1><p id="chooseText">مين بيستخدم التطبيق؟</p></div>
@@ -151,7 +165,7 @@ body.dark .bar{background:#1c3345}
 <main class="main">
  <div class="top">
   <div><h1 id="hello">أهلاً يا ياسر 👋</h1><div class="muted" id="today"></div></div>
-  <div class="actions"><button class="userChip" id="userChip" ><span class="mini" id="userEmoji">👨</span><b id="userName">ياسر</b></button><button class="btn ghost sound" id="themeBtn" title="Theme">🌙</button><button class="btn ghost sound" id="soundBtn" title="Sound">🔊</button><button class="btn ghost" id="lang">EN</button><button class="btn ghost" id="logoutBtn" onclick="logout()">🚪 خروج</button><button class="btn primary" id="quick">＋ <span data-t="addExpense">مصروف</span></button></div>
+  <div class="actions"><button class="userChip" id="userChip" onclick="openProfile()"><span class="mini" id="userEmoji">👨</span><b id="userName">ياسر</b></button><button class="btn ghost sound" id="themeBtn" title="Theme">🌙</button><button class="btn ghost sound" id="soundBtn" title="Sound">🔊</button><button class="btn ghost" id="lang">EN</button><button class="btn ghost" id="logoutBtn" onclick="logout()">🚪 خروج</button><button class="btn primary" id="quick">＋ <span data-t="addExpense">مصروف</span></button></div>
  </div>
 
  <section id="home" class="page active">
@@ -236,6 +250,29 @@ body.dark .bar{background:#1c3345}
  <button class="btn primary" id="addSavingsConfirmBtn" style="width:100%" onclick="confirmAddToGoal()">＋ إضافة الادخار</button>
 </div></div>
 
+<div class="modal" id="profileModal"><div class="modalbox" style="max-width:460px">
+ <div class="sectionhead"><h2 id="profileModalTitle">حسابي</h2><button class="btn ghost" onclick="closeProfileModal()">✕</button></div>
+ <div style="text-align:center"><div id="profilePreview" style="font-size:58px">👨</div><h2 id="profileDisplayName" style="margin:8px 0 0"></h2></div>
+ <div class="field"><label id="characterLabel">اختار Character</label><div class="avatarChoices" id="avatarChoices"></div></div>
+ <label class="uploadAvatarLabel" for="avatarFile" id="uploadAvatarLabel">📷 رفع صورة من الجهاز</label>
+ <input id="avatarFile" type="file" accept="image/*" hidden>
+ <div class="muted" id="avatarHelp" style="font-size:12px;margin-top:8px;text-align:center">الصورة هتتحفظ على حسابك في Family Hub</div>
+ <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+ <h2 id="passwordSectionTitle" style="margin-bottom:10px">🔐 تغيير كلمة المرور</h2>
+ <div class="field"><label id="currentPasswordLabel">كلمة المرور الحالية</label><input id="currentPassword" type="password" autocomplete="current-password"></div>
+ <div class="field"><label id="newPasswordLabel">كلمة المرور الجديدة</label><input id="newPassword" type="password" autocomplete="new-password" minlength="6"></div>
+ <div class="field"><label id="confirmPasswordLabel">تأكيد كلمة المرور الجديدة</label><input id="confirmPassword" type="password" autocomplete="new-password" minlength="6"></div>
+ <button class="btn primary" id="changePasswordBtn" style="width:100%" onclick="changePassword()">تغيير كلمة المرور</button>
+</div></div>
+
+<div class="modal" id="resetPasswordModal"><div class="modalbox" style="max-width:430px">
+ <div class="sectionhead"><h2 id="resetPasswordTitle">تعيين كلمة مرور جديدة</h2></div>
+ <div class="muted" id="resetPasswordHelp" style="margin-bottom:12px">اكتب كلمة المرور الجديدة لحسابك.</div>
+ <div class="field"><label id="recoveryNewLabel">كلمة المرور الجديدة</label><input id="recoveryNewPassword" type="password" autocomplete="new-password" minlength="6"></div>
+ <div class="field"><label id="recoveryConfirmLabel">تأكيد كلمة المرور</label><input id="recoveryConfirmPassword" type="password" autocomplete="new-password" minlength="6"></div>
+ <button class="btn primary" id="saveRecoveredPasswordBtn" style="width:100%" onclick="saveRecoveredPassword()">حفظ كلمة المرور الجديدة</button>
+</div></div>
+
 <div class="modal" id="financeModal"><div class="modalbox">
  <div class="sectionhead"><h2 data-t="addTransaction">إضافة حركة مالية</h2><button class="btn ghost" onclick="closeModals()">✕</button></div>
  <div class="field"><label data-t="type">النوع</label>
@@ -283,11 +320,19 @@ let tasks=JSON.parse(LS.getItem('fh_tasks')||'null')||[
 
 
 let currentUser=LS.getItem('fh_user')||null;
+let deviceUser=LS.getItem('fh_device_user')||null;
 const profileEmojis={yasser:'👨',riham:'👩',ismail:'🧑',hamza:'👦'};
+const avatarCharacters=['👨','👩','🧑','👦','👧','🧔','👩‍🦱','👨‍🦱','👩‍💼','👨‍💼','🦸','🦸‍♀️'];
+let avatarUrls={};
+function avatarMarkup(id,cls='profilePhoto'){
+ const url=avatarUrls[id];
+ return url?`<img class="${cls}" src="${url}" alt="">`:`<span>${profileEmojis[id]||'🙂'}</span>`;
+}
+
 function isParent(){return currentUser==='yasser'||currentUser==='riham'}
 function renderProfiles(){
  const box=document.getElementById('profiles');
- box.innerHTML=members.map(m=>`<button class="profileBtn" onclick="loginAs('${m.id}')"><div class="profileEmoji">${profileEmojis[m.id]}</div><div class="profileName">${m[lang]}</div><div class="profileRole">${m[lang==='ar'?'roleAr':'roleEn']}</div></button>`).join('');
+ box.innerHTML=members.map(m=>`<button class="profileBtn" onclick="loginAs('${m.id}')"><div class="profileEmoji">${avatarMarkup(m.id,'profilePhotoBtn')}</div><div class="profileName">${m[lang]}</div><div class="profileRole">${m[lang==='ar'?'roleAr':'roleEn']}</div></button>`).join('');
  document.getElementById('chooseText').textContent=lang==='ar'?'مين بيستخدم التطبيق؟':'Who is using Family Hub?';
  document.getElementById('loginLang').textContent=lang==='ar'?'EN':'AR';
 }
@@ -299,7 +344,7 @@ function loginAs(id){
  document.getElementById('pinHint').textContent=lang==='ar'?'أدخل كلمة مرور الحساب':'Enter account password';
  document.getElementById('pinDots').style.display='none';
  const pad=document.getElementById('pinPad');
- pad.innerHTML=`<input id="cloudPassword" type="password" autocomplete="current-password" placeholder="${lang==='ar'?'كلمة المرور':'Password'}" style="grid-column:1/-1;width:100%;padding:14px;border:1px solid var(--line);border-radius:14px;font:inherit;background:var(--card);color:var(--text)"><button id="cloudLoginBtn" class="btn primary" style="grid-column:1/-1;background:#177c95;color:#fff;font-weight:800;min-height:44px" onclick="cloudLogin()">${lang==='ar'?'دخول / Login':'Sign in / دخول'}</button>`;
+ pad.innerHTML=`<input id="cloudPassword" type="password" autocomplete="current-password" placeholder="${lang==='ar'?'كلمة المرور':'Password'}" style="grid-column:1/-1;width:100%;padding:14px;border:1px solid var(--line);border-radius:14px;font:inherit;background:var(--card);color:var(--text)"><button id="cloudLoginBtn" class="btn primary" style="grid-column:1/-1;background:#177c95;color:#fff;font-weight:800;min-height:44px" onclick="cloudLogin()">${lang==='ar'?'دخول / Login':'Sign in / دخول'}</button><button type="button" class="btn ghost" style="grid-column:1/-1" onclick="forgotPassword()">${lang==='ar'?'نسيت كلمة المرور؟':'Forgot password?'}</button><button type="button" class="btn ghost" style="grid-column:1/-1" onclick="changeDeviceUser()">${lang==='ar'?'👥 تغيير المستخدم':'👥 Change user'}</button>`;
  document.getElementById('pinModal').classList.add('show');
  setTimeout(()=>document.getElementById('cloudPassword')?.focus(),100);
 }
@@ -321,21 +366,82 @@ function checkPin(){
  else if(existing===pinEntry)finishLogin();
  else{tone('delete');showToast(lang==='ar'?'PIN غير صحيح':'Incorrect PIN');pinEntry='';updatePinDots()}
 }
+
+async function forgotPassword(){
+ const email=accountEmails[pendingUser];
+ if(!email){showToast(lang==='ar'?'تعذر تحديد البريد الإلكتروني':'Could not identify email');return}
+ const redirectTo='https://ykhalifa75-commits.github.io/family-hub/';
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo});
+ if(error){console.error('Password reset error',error);showToast((lang==='ar'?'تعذر إرسال رابط الاستعادة: ':'Could not send reset link: ')+(error.message||''));return}
+ tone('success');
+ showToast(lang==='ar'?'تم إرسال رابط استعادة كلمة المرور إلى البريد ✓':'Password reset link sent ✓');
+}
+
+async function changePassword(){
+ if(!currentUser)return;
+ const current=document.getElementById('currentPassword').value;
+ const next=document.getElementById('newPassword').value;
+ const confirm=document.getElementById('confirmPassword').value;
+ if(!current||!next||!confirm){showToast(lang==='ar'?'اكتب كل بيانات كلمة المرور':'Fill in all password fields');return}
+ if(next.length<6){showToast(lang==='ar'?'كلمة المرور الجديدة لازم تكون 6 أحرف على الأقل':'New password must be at least 6 characters');return}
+ if(next!==confirm){showToast(lang==='ar'?'تأكيد كلمة المرور غير مطابق':'Passwords do not match');return}
+ const email=accountEmails[currentUser];
+ const {error:verifyErr}=await sb.auth.signInWithPassword({email,password:current});
+ if(verifyErr){tone('delete');showToast(lang==='ar'?'كلمة المرور الحالية غير صحيحة':'Current password is incorrect');return}
+ const {error}=await sb.auth.updateUser({password:next});
+ if(error){console.error('Change password error',error);showToast((lang==='ar'?'تعذر تغيير كلمة المرور: ':'Could not change password: ')+(error.message||''));return}
+ document.getElementById('currentPassword').value='';document.getElementById('newPassword').value='';document.getElementById('confirmPassword').value='';
+ tone('success');showToast(lang==='ar'?'تم تغيير كلمة المرور ✓':'Password changed ✓');
+}
+
+function openRecoveryModal(){
+ document.body.classList.add('authLocked');
+ document.getElementById('resetPasswordTitle').textContent=lang==='ar'?'تعيين كلمة مرور جديدة':'Set a new password';
+ document.getElementById('resetPasswordHelp').textContent=lang==='ar'?'اكتب كلمة المرور الجديدة لحسابك.':'Enter the new password for your account.';
+ document.getElementById('recoveryNewLabel').textContent=lang==='ar'?'كلمة المرور الجديدة':'New password';
+ document.getElementById('recoveryConfirmLabel').textContent=lang==='ar'?'تأكيد كلمة المرور':'Confirm password';
+ document.getElementById('saveRecoveredPasswordBtn').textContent=lang==='ar'?'حفظ كلمة المرور الجديدة':'Save new password';
+ document.getElementById('loginGate').classList.add('hidden');
+ document.getElementById('pinModal').classList.remove('show');
+ document.getElementById('resetPasswordModal').classList.add('show');
+ setTimeout(()=>document.getElementById('recoveryNewPassword')?.focus(),100);
+}
+
+async function saveRecoveredPassword(){
+ const p=document.getElementById('recoveryNewPassword').value;
+ const c=document.getElementById('recoveryConfirmPassword').value;
+ if(p.length<6){showToast(lang==='ar'?'كلمة المرور لازم تكون 6 أحرف على الأقل':'Password must be at least 6 characters');return}
+ if(p!==c){showToast(lang==='ar'?'تأكيد كلمة المرور غير مطابق':'Passwords do not match');return}
+ const {error}=await sb.auth.updateUser({password:p});
+ if(error){console.error('Recovery update error',error);showToast((lang==='ar'?'تعذر حفظ كلمة المرور: ':'Could not save password: ')+(error.message||''));return}
+ tone('success');showToast(lang==='ar'?'تم تعيين كلمة المرور الجديدة ✓':'New password saved ✓');
+ document.getElementById('resetPasswordModal').classList.remove('show');
+ await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;pendingUser=null;document.body.classList.add('authLocked');
+ document.getElementById('loginGate').classList.remove('hidden');renderProfiles();
+}
+
+sb.auth.onAuthStateChange((event,session)=>{
+ if(event==='PASSWORD_RECOVERY') setTimeout(openRecoveryModal,0);
+});
+
 async function finishLogin(){
  currentUser=pendingUser;
  const ok=await loadCloudData();
  if(!ok){await sb.auth.signOut();currentUser=null;return}
  LS.setItem('fh_user',currentUser);
+ LS.setItem('fh_device_user',currentUser); deviceUser=currentUser;
  document.getElementById('pinModal').classList.remove('show');
  document.getElementById('loginGate').classList.add('hidden');
+ document.body.classList.remove('authLocked');
  tone('success');applyRole();render();startRealtime();
 }
 function cancelPin(){document.getElementById('pinModal').classList.remove('show');pendingUser=null;pinEntry=''}
-async function logout(){await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;document.getElementById('loginGate').classList.remove('hidden');renderProfiles();tone('tap')}
+async function logout(){await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;document.body.classList.add('authLocked');document.getElementById('loginGate').classList.add('hidden');renderProfiles();tone('tap');if(deviceUser&&members.some(m=>m.id===deviceUser)){setTimeout(()=>loginAs(deviceUser),0)}else{document.getElementById('loginGate').classList.remove('hidden')}}
+function changeDeviceUser(){document.body.classList.add('authLocked');LS.removeItem('fh_device_user');deviceUser=null;pendingUser=null;document.getElementById('pinModal').classList.remove('show');document.getElementById('loginGate').classList.remove('hidden');renderProfiles();tone('tap')}
 function applyRole(){
  if(!currentUser)return;
  let m=members.find(x=>x.id===currentUser);
- document.getElementById('userName').textContent=m[lang];document.getElementById('userEmoji').textContent=profileEmojis[currentUser];
+ document.getElementById('userName').textContent=m[lang];document.getElementById('userEmoji').innerHTML=avatarMarkup(currentUser,'miniPhoto');
  document.getElementById('hello').textContent=(lang==='ar'?'أهلاً يا ':'Hello, ')+m[lang]+' 👋';
  document.getElementById('financeNav').style.display='';
  document.getElementById('quick').style.display='';
@@ -344,6 +450,57 @@ function applyRole(){
  // Children see only their own tasks on home/task page through render filtering.
 }
 
+
+
+function openProfile(){
+ if(!currentUser)return;
+ const m=members.find(x=>x.id===currentUser);
+ document.getElementById('profileModalTitle').textContent=lang==='ar'?'حسابي':'My Profile';
+ document.getElementById('profileDisplayName').textContent=m[lang];
+ document.getElementById('characterLabel').textContent=lang==='ar'?'اختار Character':'Choose a character';
+ document.getElementById('uploadAvatarLabel').textContent=lang==='ar'?'📷 رفع صورة من الجهاز':'📷 Upload a photo';
+ document.getElementById('avatarHelp').textContent=lang==='ar'?'الصورة هتتحفظ على حسابك في Family Hub':'Your photo will be saved to your Family Hub account';
+ document.getElementById('passwordSectionTitle').textContent=lang==='ar'?'🔐 تغيير كلمة المرور':'🔐 Change Password';
+ document.getElementById('currentPasswordLabel').textContent=lang==='ar'?'كلمة المرور الحالية':'Current password';
+ document.getElementById('newPasswordLabel').textContent=lang==='ar'?'كلمة المرور الجديدة':'New password';
+ document.getElementById('confirmPasswordLabel').textContent=lang==='ar'?'تأكيد كلمة المرور الجديدة':'Confirm new password';
+ document.getElementById('changePasswordBtn').textContent=lang==='ar'?'تغيير كلمة المرور':'Change password';
+ renderAvatarChoices();
+ refreshProfilePreview();
+ document.getElementById('profileModal').classList.add('show');
+}
+function closeProfileModal(){document.getElementById('profileModal').classList.remove('show')}
+function refreshProfilePreview(){
+ const p=document.getElementById('profilePreview');
+ p.innerHTML=avatarMarkup(currentUser,'profilePhotoBtn');
+}
+function renderAvatarChoices(){
+ const box=document.getElementById('avatarChoices');
+ box.innerHTML=avatarCharacters.map(e=>`<button type="button" class="avatarChoice ${profileEmojis[currentUser]===e&&!avatarUrls[currentUser]?'active':''}" onclick="saveCharacter('${e}')">${e}</button>`).join('');
+}
+async function saveCharacter(emoji){
+ const rowId=memberDbId(currentUser); if(!rowId)return;
+ const {error}=await sb.from('family_members').update({avatar_emoji:emoji,avatar_path:null}).eq('id',rowId).eq('family_id',familyId);
+ if(error){console.error(error);showToast(error.message);return}
+ profileEmojis[currentUser]=emoji; delete avatarUrls[currentUser];
+ tone('success'); await loadCloudData(); applyRole(); renderProfiles(); render(); renderAvatarChoices(); refreshProfilePreview();
+ showToast(lang==='ar'?'تم تغيير الـ Character ✓':'Character updated ✓');
+}
+document.getElementById('avatarFile').addEventListener('change',async function(){
+ const file=this.files?.[0]; if(!file||!currentUser||!familyId)return;
+ if(!file.type.startsWith('image/')){showToast(lang==='ar'?'اختار ملف صورة':'Choose an image file');return}
+ if(file.size>5*1024*1024){showToast(lang==='ar'?'الصورة لازم تكون أقل من 5 MB':'Image must be under 5 MB');return}
+ const rowId=memberDbId(currentUser); if(!rowId)return;
+ const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+ const path=`${familyId}/${rowId}/${Date.now()}.${ext}`;
+ showToast(lang==='ar'?'جاري رفع الصورة...':'Uploading photo...');
+ const {error:upErr}=await sb.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type});
+ if(upErr){console.error(upErr);showToast((lang==='ar'?'خطأ رفع الصورة: ':'Upload error: ')+upErr.message);return}
+ const {error:dbErr}=await sb.from('family_members').update({avatar_path:path}).eq('id',rowId).eq('family_id',familyId);
+ if(dbErr){console.error(dbErr);showToast((lang==='ar'?'خطأ حفظ الصورة: ':'Save error: ')+dbErr.message);return}
+ tone('success'); await loadCloudData(); applyRole(); renderProfiles(); render(); renderAvatarChoices(); refreshProfilePreview();
+ this.value=''; showToast(lang==='ar'?'تم تغيير الصورة ✓':'Photo updated ✓');
+});
 
 let goals=JSON.parse(LS.getItem('fh_goals')||'null')||[
 {id:1,nameAr:'طوارئ الأسرة',nameEn:'Family Emergency',target:20000,saved:5000,icon:'🛟'},
@@ -419,6 +576,16 @@ async function loadCloudData(){
   if(matched) currentUser=matched.id;
 
   memberRows={}; (fm||[]).forEach(x=>{const k=(x.display_name||'').toLowerCase();memberRows[k]=x});
+   avatarUrls={};
+   for(const m of members){
+    const row=memberRows[m.en.toLowerCase()];
+    if(row?.avatar_emoji) profileEmojis[m.id]=row.avatar_emoji;
+    if(row?.avatar_path){
+     const {data:signed}=await sb.storage.from('avatars').createSignedUrl(row.avatar_path,3600);
+     if(signed?.signedUrl) avatarUrls[m.id]=signed.signedUrl;
+    }
+   }
+
   const [fr,trr,gr]=await Promise.all([
    sb.from('transactions').select('*').eq('family_id',familyId).order('created_at',{ascending:true}),
    sb.from('tasks').select('*').eq('family_id',familyId).order('created_at',{ascending:true}),
@@ -468,12 +635,12 @@ function render(){
  if(!isParent()){document.querySelector('[data-t=income]').textContent=lang==='ar'?'مصروفي':'My Money';document.querySelector('[data-t=expenses]').textContent=lang==='ar'?'صرفت':'I Spent';document.querySelector('[data-t=remaining]').textContent=lang==='ar'?'باقي معايا':'Left';document.querySelector('[data-t=savings]').textContent=lang==='ar'?'وفّرت':'I Saved'}
  let cats={};mf.filter(x=>x.type==='expense').forEach(x=>cats[x.cat]=(cats[x.cat]||0)+x.amount);let max=Math.max(...Object.values(cats),1);
  bars.innerHTML=Object.entries(cats).slice(0,5).map(([k,v])=>`<div class="barrow"><div class="barhead"><span>${k}</span><b>${money(v)}</b></div><div class="bar"><i style="width:${v/max*100}%"></i></div></div>`).join('')||`<div class="empty">—</div>`;
- familyToday.innerHTML=members.map(m=>{let n=tasks.filter(t=>t.person===m.id&&!t.done).length;return `<div class="person"><div class="who"><div class="avatar">${m[lang][0]}</div><div><b>${m[lang]}</b><div class="muted">${m[lang==='ar'?'roleAr':'roleEn']}</div></div></div><span class="pill">${n} ${lang==='ar'?'مهام':'tasks'}</span></div>`}).join('');
+ familyToday.innerHTML=members.map(m=>{let n=tasks.filter(t=>t.person===m.id&&!t.done).length;return `<div class="person"><div class="who"><div class="avatar" style="overflow:hidden">${avatarMarkup(m.id,'miniPhoto')}</div><div><b>${m[lang]}</b><div class="muted">${m[lang==='ar'?'roleAr':'roleEn']}</div></div></div><span class="pill">${n} ${lang==='ar'?'مهام':'tasks'}</span></div>`}).join('');
  recent.innerHTML=vf.slice(-4).reverse().map(x=>`<div class="txn"><div><b>${x.cat}</b><div class="muted">${x.date}</div></div><b>${x.type==='expense'?'-':'+'}${money(x.amount)}</b></div>`).join('')||`<div class="empty">—</div>`;
  let td=new Date().toISOString().slice(0,10); todayTasks.innerHTML=tasks.filter(x=>x.date===td).map(taskHTML).join('')||`<div class="empty">${lang==='ar'?'لا توجد مهام اليوم':'No tasks today'}</div>`;
  let rf=reportFinance(); financeRows.innerHTML=rf.slice().reverse().map(x=>`<tr><td>${x.date}</td><td>${typeLabel(x.type)}</td><td>${x.cat}</td><td>${money(x.amount)}</td><td><button class="btn ghost" onclick="delFinance(${x.id})">×</button></td></tr>`).join(''); let ri=rf.filter(x=>x.type==='income').reduce((a,b)=>a+b.amount,0),re=rf.filter(x=>x.type==='expense').reduce((a,b)=>a+b.amount,0),rs=rf.filter(x=>x.type==='saving').reduce((a,b)=>a+b.amount,0); rIncome.textContent=money(ri);rExpense.textContent=money(re);rSaving.textContent=money(rs);rRemain.textContent=money(ri-re-rs); document.getElementById('fromLabel').textContent=lang==='ar'?'من':'From';document.getElementById('toLabel').textContent=lang==='ar'?'إلى':'To';document.getElementById('thisMonthBtn').textContent=lang==='ar'?'هذا الشهر':'This month';document.getElementById('rIncomeLabel').textContent=lang==='ar'?(isParent()?'الدخل':'فلوس أخدتها'):'Income';document.getElementById('rExpenseLabel').textContent=lang==='ar'?(isParent()?'المصروف':'فلوس صرفتها'):'Spent';document.getElementById('rSavingLabel').textContent=lang==='ar'?(isParent()?'الادخار':'فلوس وفرتها'):'Saved';document.getElementById('rRemainLabel').textContent=lang==='ar'?'المتبقي':'Left';
  renderTaskList();
- familyCards.innerHTML=members.map((m,idx)=>{let total=tasks.filter(t=>t.person===m.id).length,done=tasks.filter(t=>t.person===m.id&&t.done).length,p=total?Math.round(done/total*100):0;let emojis=['👨','👩','🧑','👦'];return `<div class="card"><div class="who"><div class="familyAvatar">${emojis[idx]}</div><div><h2 style="margin:0">${m[lang]}</h2><div class="muted">${m[lang==='ar'?'roleAr':'roleEn']}</div></div></div><div class="memberStat"><div class="progressRing" style="--p:${p}"><span>${p}%</span></div><div><b>${done}/${total}</b><div class="muted">${lang==='ar'?'مهام مكتملة':'tasks completed'}</div></div></div></div>`}).join('');
+ familyCards.innerHTML=members.map((m,idx)=>{let total=tasks.filter(t=>t.person===m.id).length,done=tasks.filter(t=>t.person===m.id&&t.done).length,p=total?Math.round(done/total*100):0;let emojis=['👨','👩','🧑','👦'];return `<div class="card"><div class="who"><div class="familyAvatar" style="overflow:hidden">${avatarMarkup(m.id,'profilePhoto')}</div><div><h2 style="margin:0">${m[lang]}</h2><div class="muted">${m[lang==='ar'?'roleAr':'roleEn']}</div></div></div><div class="memberStat"><div class="progressRing" style="--p:${p}"><span>${p}%</span></div><div><b>${done}/${total}</b><div class="muted">${lang==='ar'?'مهام مكتملة':'tasks completed'}</div></div></div></div>`}).join('');
  let budget=inc?Math.min(100,Math.round(exp/inc*100)):0;document.getElementById('budgetRing').style.setProperty('--p',budget);document.getElementById('budgetPct').textContent=budget+'%';
  document.getElementById('heroTitle').textContent=lang==='ar'?'خلّينا نخلي الشهر تحت السيطرة':'Let’s keep this month on track';
  document.getElementById('heroSub').textContent=lang==='ar'?'كل خطوة صغيرة بتفرق في ميزانية ومهام البيت.':'Small steps make a big difference to our home budget and tasks.';
@@ -597,7 +764,14 @@ document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',(
 })();
 const _mb=monthBounds();const reportFrom=document.getElementById('reportFrom'),reportTo=document.getElementById('reportTo');reportFrom.value=_mb[0];reportTo.value=_mb[1];reportFrom.addEventListener('change',render);reportTo.addEventListener('change',render);
 renderProfiles();
-currentUser=null;LS.removeItem('fh_user');document.getElementById('loginGate').classList.remove('hidden');
+document.body.classList.add('authLocked');
+currentUser=null;LS.removeItem('fh_user');
+if(deviceUser&&members.some(m=>m.id===deviceUser)){
+ document.getElementById('loginGate').classList.add('hidden');
+ setTimeout(()=>loginAs(deviceUser),0);
+}else{
+ document.getElementById('loginGate').classList.remove('hidden');
+}
 render();
 </script>
 </body></html>
