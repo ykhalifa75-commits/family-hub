@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Family Hub</title>
 <style>
 :root{--bg:#f4f7fb;--card:#fff;--ink:#152238;--muted:#718096;--accent:#176b87;--accent2:#64ccc5;--danger:#d9534f;--line:#e8edf3}
@@ -65,8 +65,11 @@ body.dark .bar{background:#1c3345}
 .memberStat{display:flex;align-items:center;gap:14px;margin-top:18px}
 .memberStat .progressRing{width:62px;height:62px}.memberStat .progressRing:before{width:48px;height:48px}
 .fab{display:none;position:fixed;inset-inline-end:18px;bottom:82px;width:54px;height:54px;border:0;border-radius:18px;background:var(--accent);color:#fff;font-size:28px;box-shadow:0 10px 24px rgba(16,42,67,.28);z-index:7}
-.confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
-.confetti i{position:absolute;top:-20px;font-style:normal;animation:fall 1.4s ease-in forwards}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.confetti i{position:absolute;top:-45px;font-style:normal;animation:fall 5.8s cubic-bezier(.15,.75,.25,1) forwards;will-change:transform,opacity}
+.celebrateMsg{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%) scale(.7);z-index:10000;pointer-events:none;background:rgba(13,37,57,.92);color:#fff;border-radius:24px;padding:16px 24px;font-weight:900;font-size:clamp(20px,5vw,34px);text-align:center;opacity:0;box-shadow:0 18px 55px rgba(0,0,0,.25)}
+.celebrateMsg.show{animation:celebratePop 5.2s ease forwards}
+@keyframes celebratePop{0%{opacity:0;transform:translate(-50%,-50%) scale(.65)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}22%,72%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-58%) scale(.95)}}
 @keyframes fall{to{transform:translate(var(--x),105vh) rotate(520deg);opacity:.15}}
 .streak{display:inline-flex;gap:6px;align-items:center;background:#fff4dd;color:#9a6211;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:700}
 .dark .streak{background:#352b19;color:#ffd789}
@@ -109,6 +112,25 @@ body.dark .bar{background:#1c3345}
 @keyframes pulseBtn{50%{transform:scale(1.06);box-shadow:0 0 0 12px rgba(255,255,255,.13)}}
 .introBtn.gone{opacity:0;pointer-events:none;animation:none}
 
+
+/* Premium 3D Family Hub intro */
+.intro3d{overflow:hidden;perspective:1000px;background:radial-gradient(circle at 50% 34%,#238aa1 0,#176b87 28%,#102a43 67%,#091d30 100%)}
+.intro3d:before{content:"";position:absolute;inset:-25%;background:conic-gradient(from 0deg,transparent,rgba(100,204,197,.08),transparent 25%,rgba(255,255,255,.055),transparent 55%);animation:introSweep 12s linear infinite}
+.introGlow{position:absolute;width:380px;height:380px;border-radius:50%;filter:blur(80px);opacity:.22;pointer-events:none}.introGlowA{background:#64ccc5;top:-170px;left:-100px;animation:glowFloat 6s ease-in-out infinite}.introGlowB{background:#4c8fda;right:-130px;bottom:-190px;animation:glowFloat 7s ease-in-out infinite reverse}
+.introStage{position:relative;z-index:2;transform-style:preserve-3d;animation:stageArrive 1.05s cubic-bezier(.16,.84,.28,1) both}
+.homeScene{width:150px;height:150px;margin:0 auto 16px;position:relative;display:grid;place-items:center;transform-style:preserve-3d;animation:sceneFloat 4.2s ease-in-out infinite}
+.homeHalo{position:absolute;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(100,204,197,.34),rgba(100,204,197,.08) 48%,transparent 72%);filter:blur(2px);animation:haloPulse 2.8s ease-in-out infinite}
+.homeCube{position:relative;width:92px;height:92px;transform-style:preserve-3d;animation:cubeTurn 7s cubic-bezier(.45,.05,.55,.95) infinite}
+.homeFace{position:absolute;inset:0;border-radius:28px;background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(8px);box-shadow:inset 0 0 25px rgba(255,255,255,.06)}
+.homeFront,.homeBack{display:grid;place-items:center;font-size:48px}.homeFront{transform:translateZ(25px);box-shadow:0 24px 55px rgba(0,0,0,.24),inset 0 0 25px rgba(255,255,255,.09)}.homeBack{transform:rotateY(180deg) translateZ(25px);font-size:34px}.homeRight{transform:rotateY(90deg) translateZ(46px);width:50px;left:21px}.homeLeft{transform:rotateY(-90deg) translateZ(46px);width:50px;left:21px}.homeTop{transform:rotateX(90deg) translateZ(46px);height:50px;top:21px}.homeBottom{transform:rotateX(-90deg) translateZ(46px);height:50px;top:21px}
+.orbit{position:absolute;border:1px solid rgba(255,255,255,.2);border-radius:50%;transform-style:preserve-3d}.orbitOne{width:138px;height:52px;transform:rotateX(70deg) rotateZ(-12deg);animation:orbitSpin 5.5s linear infinite}.orbitTwo{width:112px;height:112px;transform:rotateY(68deg);animation:orbitSpin2 7s linear infinite}.orbit i{position:absolute;left:4px;top:50%;font-style:normal;color:#d9ffff;text-shadow:0 0 12px rgba(255,255,255,.8)}
+.introTitle3d{font-size:40px;line-height:1.05;text-shadow:0 2px 0 rgba(255,255,255,.08),0 10px 25px rgba(0,0,0,.25);transform:translateZ(35px);animation:titleReveal .9s .28s cubic-bezier(.2,.85,.25,1) both}.introTitle3d span{color:#a9f0eb}
+.intro3d .introSub{animation:softReveal .8s .52s ease both}.intro3d .introFam{perspective:700px}.intro3d .introFam span{filter:drop-shadow(0 10px 10px rgba(0,0,0,.22));transform:translateY(18px) rotateX(-55deg) scale(.6)}.intro3d .introFam span.in{transform:translateY(0) rotateX(0) scale(1)}
+.intro3d .introBtn{box-shadow:0 14px 34px rgba(0,0,0,.18);animation:pulseBtn 1.8s ease-in-out infinite,softReveal .7s .8s both}
+@keyframes stageArrive{from{opacity:0;transform:translateY(20px) rotateX(9deg) scale(.92)}to{opacity:1;transform:none}}@keyframes sceneFloat{0%,100%{transform:translateY(0) rotateX(-3deg)}50%{transform:translateY(-8px) rotateX(3deg)}}@keyframes cubeTurn{0%,12%{transform:rotateX(-7deg) rotateY(-18deg)}45%{transform:rotateX(7deg) rotateY(18deg)}75%{transform:rotateX(-4deg) rotateY(342deg)}100%{transform:rotateX(-7deg) rotateY(342deg)}}@keyframes orbitSpin{to{transform:rotateX(70deg) rotateZ(348deg)}}@keyframes orbitSpin2{to{transform:rotateY(68deg) rotateZ(-360deg)}}@keyframes haloPulse{50%{transform:scale(1.14);opacity:.65}}@keyframes introSweep{to{transform:rotate(360deg)}}@keyframes glowFloat{50%{transform:translate(35px,28px) scale(1.12)}}@keyframes titleReveal{from{opacity:0;transform:translateY(14px) translateZ(-40px) rotateX(35deg)}to{opacity:1;transform:translateZ(35px)}}@keyframes softReveal{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@media(max-width:520px){.homeScene{width:130px;height:130px}.introTitle3d{font-size:34px}.homeCube{transform-origin:center}.intro3d .introFam{gap:10px}}
+@media(prefers-reduced-motion:reduce){.intro3d *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.intro3d .introFam span{opacity:1;transform:none}}
+
 /* V10 monthly finance + reports */
 .reportbar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:0 0 14px}.reportbar .field{margin:0;min-width:150px}.summaryMini{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.summaryMini .card{padding:13px}.summaryMini b{display:block;font-size:19px;margin-top:5px}.ownerTag{font-size:11px;padding:4px 7px;border-radius:12px;background:#eef4f8;color:#496477}.dark .ownerTag{background:#1c3447;color:#c8dbe8}
 @media(max-width:700px){.summaryMini{grid-template-columns:1fr 1fr}.reportbar .field{min-width:calc(50% - 5px)}}
@@ -130,7 +152,161 @@ body.authLocked{background:linear-gradient(145deg,#0d2539,#176b87);min-height:10
 body.authLocked .loginGate{display:grid}
 body.authLocked #pinModal{background:linear-gradient(145deg,#0d2539,#176b87);z-index:220}
 body.authLocked #pinModal .modalbox{box-shadow:0 30px 80px rgba(0,0,0,.28)}
+
+/* ===== Family Hub richer 3D intro ===== */
+.intro3d{perspective:1200px;overflow:hidden}
+.introStage{position:relative;z-index:5;transform-style:preserve-3d}
+.introIconCloud{position:absolute;inset:0;z-index:3;pointer-events:none;transform-style:preserve-3d}
+.introFloatIcon{position:absolute;display:grid;place-items:center;width:62px;height:62px;border-radius:20px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(9px);font-size:30px;box-shadow:0 18px 36px rgba(0,0,0,.2);animation:fhIconFloat 5s ease-in-out infinite}
+.introFloatIcon:nth-child(2n){animation-duration:5.8s}.introFloatIcon:nth-child(3n){animation-duration:6.6s}
+.introFloatIcon.i1{left:7%;top:14%}.introFloatIcon.i2{right:8%;top:16%}.introFloatIcon.i3{left:10%;bottom:14%}.introFloatIcon.i4{right:10%;bottom:13%}
+.introFloatIcon.i5{left:25%;top:6%}.introFloatIcon.i6{right:25%;top:6%}.introFloatIcon.i7{left:25%;bottom:5%}.introFloatIcon.i8{right:25%;bottom:5%}
+.introFeatureRow{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:13px auto 3px;max-width:520px;transform:translateZ(32px)}
+.introFeature{font-size:12px;font-weight:900;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(7px);box-shadow:0 8px 18px rgba(0,0,0,.1)}
+.introStage:after{content:"";position:absolute;left:50%;top:40%;width:300px;height:300px;transform:translate(-50%,-50%) translateZ(-70px);border:1px solid rgba(255,255,255,.12);border-radius:50%;animation:fhRing 11s linear infinite;pointer-events:none}
+@keyframes fhIconFloat{0%,100%{transform:translate3d(0,0,20px) rotateY(-10deg) rotateZ(-2deg)}50%{transform:translate3d(0,-20px,85px) rotateY(14deg) rotateZ(4deg)}}
+@keyframes fhRing{to{transform:translate(-50%,-50%) translateZ(-70px) rotate(360deg)}}
+@media(max-width:600px){.introFloatIcon{width:46px;height:46px;border-radius:15px;font-size:23px}.introFloatIcon.i5,.introFloatIcon.i6{top:3%}.introFeatureRow{max-width:315px}.introFeature{font-size:10px;padding:6px 8px}}
+@media(prefers-reduced-motion:reduce){.introFloatIcon,.introStage:after{animation:none!important}}
+
+
+/* ===== Cross-device responsive hardening ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden}
+body{width:100%;max-width:100vw;overflow-x:hidden}
+*,*::before,*::after{box-sizing:border-box}
+img,svg,video,canvas{max-width:100%;height:auto}
+input,select,textarea,button{max-width:100%;font-size:16px}
+.main{min-width:0;max-width:100%;overflow-x:hidden}
+.content{min-width:0;max-width:100%;overflow-x:hidden}
+.card,.modalCard{max-width:100%}
+.modal{padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+.modalCard{max-height:calc(100dvh - 24px);overflow:auto;-webkit-overflow-scrolling:touch}
+.topbar{min-width:0}
+.actions{flex-wrap:wrap}
+.hero{min-width:0}
+.grid,.grid2,.grid3{min-width:0}
+table{max-width:100%}
+
+@media (max-width:900px){
+  .app{display:block!important;width:100%!important;max-width:100vw!important}
+  .sidebar{position:relative!important;width:100%!important;max-width:100%!important;height:auto!important;min-height:0!important}
+  .sidebar nav{display:flex!important;gap:6px!important;overflow-x:auto!important;white-space:nowrap!important;padding-bottom:8px!important;-webkit-overflow-scrolling:touch}
+  .sidebar nav button,.sidebar .navItem{flex:0 0 auto!important}
+  .main,.content{width:100%!important;margin:0!important;padding-left:14px!important;padding-right:14px!important}
+  .topbar{display:flex!important;flex-wrap:wrap!important;gap:10px!important}
+  .hero{padding:18px!important}
+  .grid,.grid2,.grid3{grid-template-columns:1fr!important}
+}
+
+@media (max-width:600px){
+  body{font-size:14px}
+  .main,.content{padding-left:10px!important;padding-right:10px!important}
+  .sidebar{padding:14px 10px!important}
+  .sidebar h1,.sidebar .brand{font-size:22px!important}
+  .topbar{align-items:stretch!important}
+  .actions{width:100%!important;gap:7px!important}
+  .actions button,.actions .btn{min-height:42px}
+  .hero{padding:15px!important;border-radius:18px!important}
+  .card{padding:14px!important;border-radius:18px!important}
+  .modalCard{width:min(96vw,560px)!important;padding:16px!important;border-radius:20px!important}
+  .formGrid{grid-template-columns:1fr!important}
+  .introFloatIcon{width:42px!important;height:42px!important;font-size:21px!important}
+  .introFloatIcon.i1{left:3%!important}.introFloatIcon.i2{right:3%!important}
+  .introFloatIcon.i3{left:4%!important}.introFloatIcon.i4{right:4%!important}
+  .introFloatIcon.i5{left:18%!important}.introFloatIcon.i6{right:18%!important}
+  .introFloatIcon.i7{left:18%!important}.introFloatIcon.i8{right:18%!important}
+  .introFeatureRow{max-width:300px!important}
+}
+
+@media (max-width:380px){
+  .main,.content{padding-left:7px!important;padding-right:7px!important}
+  .introFloatIcon{width:36px!important;height:36px!important;font-size:18px!important}
+  .introFeature{font-size:9px!important;padding:5px 7px!important}
+}
+
+@media (min-width:901px) and (max-width:1200px){
+  .sidebar{width:220px!important}
+  .main{min-width:0!important}
+}
+
+@media (orientation:landscape) and (max-height:600px){
+  .introFloatIcon{transform:scale(.82)}
+  .modalCard{max-height:92dvh}
+}
+
+
+/* ===== Smooth progressive intro reveal ===== */
+#intro .homeMark,
+#intro .introTitle,
+#intro .introSub,
+#intro .introFam,
+#intro .introFeatureRow,
+#intro .introBtn{
+  opacity:0;
+  will-change:transform,opacity,filter;
+  animation:fhSoftReveal .82s cubic-bezier(.22,.8,.28,1) forwards;
+}
+#intro .homeMark{animation-delay:.12s;transform:translateY(16px) translateZ(70px) scale(.92)}
+#intro .introTitle{animation-delay:.34s;transform:translateY(15px) translateZ(48px)}
+#intro .introSub{animation-delay:.56s;transform:translateY(13px) translateZ(32px)}
+#intro .introFam{animation-delay:.80s;transform:translateY(14px) translateZ(38px)}
+#intro .introFeatureRow{animation-delay:1.05s;transform:translateY(14px) translateZ(26px)}
+#intro .introBtn{animation-delay:1.42s;transform:translateY(15px) scale(.96)}
+
+#intro .introFeature{
+  opacity:0;
+  transform:translateY(12px) scale(.94);
+  animation:fhChipReveal .62s cubic-bezier(.22,.8,.28,1) forwards;
+}
+#intro .introFeature:nth-child(1){animation-delay:1.08s}
+#intro .introFeature:nth-child(2){animation-delay:1.22s}
+#intro .introFeature:nth-child(3){animation-delay:1.36s}
+#intro .introFeature:nth-child(4){animation-delay:1.50s}
+
+#intro .introFloatIcon{
+  opacity:0;
+  animation-name:fhIconEnter,fhIconFloat;
+  animation-duration:.75s,5.4s;
+  animation-timing-function:cubic-bezier(.22,.8,.28,1),ease-in-out;
+  animation-fill-mode:forwards,both;
+  animation-iteration-count:1,infinite;
+}
+#intro .introFloatIcon.i1{animation-delay:.18s,.93s}
+#intro .introFloatIcon.i2{animation-delay:.28s,1.03s}
+#intro .introFloatIcon.i3{animation-delay:.38s,1.13s}
+#intro .introFloatIcon.i4{animation-delay:.48s,1.23s}
+#intro .introFloatIcon.i5{animation-delay:.58s,1.33s}
+#intro .introFloatIcon.i6{animation-delay:.68s,1.43s}
+#intro .introFloatIcon.i7{animation-delay:.78s,1.53s}
+#intro .introFloatIcon.i8{animation-delay:.88s,1.63s}
+
+@keyframes fhSoftReveal{
+  0%{opacity:0;filter:blur(5px)}
+  100%{opacity:1;filter:blur(0);transform:translateY(0) translateZ(0) scale(1)}
+}
+@keyframes fhChipReveal{
+  0%{opacity:0;transform:translateY(12px) scale(.94)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes fhIconEnter{
+  0%{opacity:0;filter:blur(6px);transform:translate3d(0,20px,-45px) scale(.72)}
+  100%{opacity:1;filter:blur(0);transform:translate3d(0,0,20px) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+ #intro .homeMark,#intro .introTitle,#intro .introSub,#intro .introFam,#intro .introFeatureRow,#intro .introBtn,#intro .introFeature,#intro .introFloatIcon{
+   opacity:1!important;animation:none!important;filter:none!important;transform:none!important
+ }
+}
+
 </style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0d2539">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Family Hub">
+
 </head>
 <body class="authLocked">
 <div class="loginGate" id="loginGate">
@@ -140,13 +316,34 @@ body.authLocked #pinModal .modalbox{box-shadow:0 30px 80px rgba(0,0,0,.28)}
   <div style="text-align:center;margin-top:16px"><button class="btn ghost" id="loginLang">EN</button></div>
  </div>
 </div>
-<div class="intro" id="intro">
+<div class="intro intro3d" id="intro">
+ <div class="introGlow introGlowA"></div><div class="introGlow introGlowB"></div>
  <div class="stars" id="stars"></div>
- <div class="introInner">
-  <div class="homeMark">🏡</div>
-  <div class="introTitle">Family Hub</div>
+ <div class="introIconCloud" aria-hidden="true">
+  <div class="introFloatIcon i1">💰</div>
+  <div class="introFloatIcon i2">✅</div>
+  <div class="introFloatIcon i3">🎯</div>
+  <div class="introFloatIcon i4">📅</div>
+  <div class="introFloatIcon i5">💳</div>
+  <div class="introFloatIcon i6">🏆</div>
+  <div class="introFloatIcon i7">💡</div>
+  <div class="introFloatIcon i8">❤️</div>
+ </div>
+ <div class="introInner introStage">
+  <div class="homeScene" aria-hidden="true">
+   <div class="homeHalo"></div>
+   <div class="homeCube"><div class="homeFace homeFront">🏡</div><div class="homeFace homeBack">✨</div><div class="homeFace homeRight"></div><div class="homeFace homeLeft"></div><div class="homeFace homeTop"></div><div class="homeFace homeBottom"></div></div>
+   <div class="orbit orbitOne"><i>✦</i></div><div class="orbit orbitTwo"><i>•</i></div>
+  </div>
+  <div class="introTitle introTitle3d">Family <span>Hub</span></div>
   <div class="introSub" id="introTag">بيتنا منظم.. مع بعض</div>
   <div class="introFam" id="introFam"><span>👨</span><span>👩</span><span>🧑</span><span>👦</span></div>
+  <div class="introFeatureRow" aria-hidden="true">
+   <span class="introFeature">💰 Finance</span>
+   <span class="introFeature">✅ Tasks</span>
+   <span class="introFeature">🎯 Goals</span>
+   <span class="introFeature">🏆 Achievements</span>
+  </div>
   <button class="introBtn" id="introBtn">ابدأ ✨</button>
  </div>
 </div>
@@ -230,7 +427,7 @@ body.authLocked #pinModal .modalbox{box-shadow:0 30px 80px rgba(0,0,0,.28)}
 </main>
 </div>
 
-<button class="fab" onclick="openFinance()">＋</button><div class="confetti" id="confetti"></div>
+<button class="fab" onclick="openFinance()">＋</button><div class="confetti" id="confetti"></div><div class="celebrateMsg" id="celebrateMsg"></div>
 
 <div class="modal" id="pinModal"><div class="modalbox" style="max-width:360px;text-align:center">
  <div style="font-size:38px" id="pinEmoji">👨</div><h2 id="pinTitle" style="margin-top:8px">PIN</h2>
@@ -546,7 +743,9 @@ async function confirmAddToGoal(){
  document.getElementById('addSavingsModal').classList.remove('show');
  pendingSavingsGoalId=null;
  tone('success');
- if(g.saved>=g.target)celebrate();
+ celebrate(g.saved>=g.target
+   ? (lang==='ar'?'🎯 برافو! الهدف اكتمل!':'🎯 Amazing! Goal completed!')
+   : (lang==='ar'?'💰 برافو! خطوة جديدة في الادخار!':'💰 Great job! Savings added!'));
  showToast(lang==='ar'?'تمت إضافة الادخار ✓':'Savings added ✓');
  await loadCloudData();
  render();
@@ -693,8 +892,22 @@ function updateTaskWords(){const child=!isParent();document.getElementById('task
 function openTask(){tDate.value=new Date().toISOString().slice(0,10);tTitle.value='';document.getElementById('tPerson').value=isParent()?'yasser':currentUser;renderTaskOwnerButtons();updateTaskWords();taskModal.classList.add('show')}
 function closeModals(){document.querySelectorAll('.modal').forEach(x=>x.classList.remove('show'))}
 async function saveFinance(){let a=+fAmount.value;if(!a||!fCat.value.trim()){showToast(lang==='ar'?'أكمل المبلغ والبند':'Enter amount and category');return}if(!familyId){showToast(lang==='ar'?'لم يتم تحميل الأسرة بعد':'Family is not loaded yet');return}const {error}=await sb.from('transactions').insert({family_id:familyId,type:fType.value,amount:a,category:fCat.value.trim(),transaction_date:fDate.value,member_id:memberDbId(currentUser)});if(error){console.error(error);showToast(error.message);return}fAmount.value='';fCat.value='';closeModals();await loadCloudData();render()}
-async function saveTask(){if(!tTitle.value.trim()||!familyId){showToast(lang==='ar'?'اكتب المهمة الأول':'Write the task first');return}const who=isParent()?tPerson.value:currentUser;const {error}=await sb.from('tasks').insert({family_id:familyId,title:tTitle.value.trim(),assigned_to:memberDbId(who),due_date:tDate.value,done:false});if(error){console.error(error);showToast(error.message);return}tTitle.value='';closeModals();await loadCloudData();render();showToast(lang==='ar'?'اتضافت المهمة ✅':'Task added ✅')}
-async function toggleTask(id){let t=tasks.find(x=>x.id===id);if(!t)return;const {error}=await sb.from('tasks').update({done:!t.done}).eq('id',id);if(error){console.error(error);showToast(error.message);return}await loadCloudData();render()}
+async function saveTask(){
+ const title=tTitle.value.trim();
+ if(!title){showToast(lang==='ar'?'اكتب المهمة الأول':'Write the task first');return}
+ const who=isParent()?tPerson.value:currentUser;
+ const assignedId=memberDbId(who);
+ if(!assignedId){showToast(lang==='ar'?'اختار فرد من الأسرة':'Choose a family member');return}
+ const {error}=await sb.rpc('create_family_task',{
+   p_title:title,
+   p_assigned_to:assignedId,
+   p_due_date:tDate.value||null
+ });
+ if(error){console.error('create_family_task error',error);showToast(error.message);return}
+ tTitle.value='';closeModals();await loadCloudData();render();
+ showToast(lang==='ar'?'اتضافت المهمة ✅':'Task added ✅');
+}
+async function toggleTask(id){let t=tasks.find(x=>x.id===id);if(!t)return;const completing=!t.done;const {error}=await sb.from('tasks').update({done:completing}).eq('id',id);if(error){console.error(error);showToast(error.message);return}await loadCloudData();render();if(completing)celebrate(lang==='ar'?'👏 برافو! المهمة خلصت!':'👏 Great job! Task completed!')}
 async function delTask(id){const {error}=await sb.from('tasks').delete().eq('id',id);if(error){console.error(error);showToast(error.message);return}await loadCloudData();render()}
 async function delFinance(id){const {error}=await sb.from('transactions').delete().eq('id',id);if(error){console.error(error);showToast(error.message);return}await loadCloudData();render()}
 
@@ -719,10 +932,134 @@ soundBtn.onclick=()=>{soundOn=!soundOn;LS.setItem('fh_sound',soundOn?'on':'off')
 let dark=LS.getItem('fh_theme')==='dark';const themeBtn=document.getElementById('themeBtn');
 function syncTheme(){document.body.classList.toggle('dark',dark);themeBtn.textContent=dark?'☀️':'🌙'}
 themeBtn.onclick=()=>{dark=!dark;LS.setItem('fh_theme',dark?'dark':'light');syncTheme();tone('tap')};syncTheme();
-function celebrate(){
- const box=document.getElementById('confetti'),bits=['✨','⭐','●','◆','🎉'];
- box.innerHTML=Array.from({length:28},(_,i)=>`<i style="left:${(i*37)%100}%;--x:${(i%2?1:-1)*(20+(i*13)%100)}px;animation-delay:${(i%7)*.045}s">${bits[i%bits.length]}</i>`).join('');
- setTimeout(()=>box.innerHTML='',1700);
+
+let bgMusicCtx=null,bgMusicMaster=null,bgMusicTimer=null,bgMusicStep=0,bgMusicStarted=false;
+function bgMusicNote(freq,when,dur=.9,vol=.018){
+ if(!bgMusicCtx||!bgMusicMaster)return;
+ const o=bgMusicCtx.createOscillator(),g=bgMusicCtx.createGain();
+ o.type='sine';o.frequency.value=freq;
+ g.gain.setValueAtTime(.0001,when);
+ g.gain.exponentialRampToValueAtTime(vol,when+.08);
+ g.gain.exponentialRampToValueAtTime(.0001,when+dur);
+ o.connect(g);g.connect(bgMusicMaster);o.start(when);o.stop(when+dur+.05);
+}
+function bgMusicTick(){
+ if(!bgMusicCtx||!soundOn)return;
+ const chords=[
+  [261.63,329.63,392.00],
+  [220.00,261.63,329.63],
+  [174.61,220.00,261.63],
+  [196.00,246.94,293.66]
+ ];
+ const chord=chords[bgMusicStep%chords.length],t=bgMusicCtx.currentTime+.03;
+ chord.forEach((f,i)=>bgMusicNote(f,t+i*.035,1.7,.012));
+ bgMusicNote(chord[0]*2,t+.48,.65,.010);
+ bgMusicStep++;
+}
+function startBackgroundMusic(){
+ if(bgMusicStarted||!soundOn)return;
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+  bgMusicCtx=new AC();bgMusicMaster=bgMusicCtx.createGain();
+  bgMusicMaster.gain.value=.72;bgMusicMaster.connect(bgMusicCtx.destination);
+  bgMusicStarted=true;bgMusicTick();bgMusicTimer=setInterval(bgMusicTick,1800);
+ }catch(e){console.warn('Background music unavailable',e)}
+}
+function stopBackgroundMusic(){
+ if(bgMusicTimer){clearInterval(bgMusicTimer);bgMusicTimer=null}
+ if(bgMusicCtx){bgMusicCtx.close().catch(()=>{});bgMusicCtx=null}
+ bgMusicMaster=null;bgMusicStarted=false;
+}
+function duckBackgroundMusic(){
+ if(!bgMusicCtx||!bgMusicMaster)return;
+ const t=bgMusicCtx.currentTime;
+ bgMusicMaster.gain.cancelScheduledValues(t);
+ bgMusicMaster.gain.setValueAtTime(bgMusicMaster.gain.value,t);
+ bgMusicMaster.gain.linearRampToValueAtTime(.16,t+.12);
+ bgMusicMaster.gain.linearRampToValueAtTime(.72,t+6.0);
+}
+document.addEventListener('pointerdown',()=>{if(soundOn&&!bgMusicStarted)startBackgroundMusic()},{once:true});
+
+function celebrationSound(){
+ if(!soundOn)return;
+ duckBackgroundMusic();
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+  const ctx=new AC(),master=ctx.createGain();
+  master.gain.value=.58;master.connect(ctx.destination);
+  const now=ctx.currentTime;
+
+  // Big stadium-style "Yeeeeah!" chord / crowd swell.
+  [220,277,330,440,554,659].forEach((f,i)=>{
+   const o=ctx.createOscillator(),g=ctx.createGain(),lp=ctx.createBiquadFilter();
+   o.type=i%3===0?'sawtooth':(i%2?'triangle':'sine');
+   o.frequency.setValueAtTime(f*.72,now+.03*i);
+   o.frequency.exponentialRampToValueAtTime(f*1.34,now+1.15+.03*i);
+   lp.type='lowpass';lp.frequency.value=1900;
+   g.gain.setValueAtTime(.0001,now+.03*i);
+   g.gain.exponentialRampToValueAtTime(.09,now+.12+.03*i);
+   g.gain.setValueAtTime(.075,now+1.55+.03*i);
+   g.gain.exponentialRampToValueAtTime(.0001,now+2.8+.03*i);
+   o.connect(lp);lp.connect(g);g.connect(master);o.start(now+.03*i);o.stop(now+2.9+.03*i);
+  });
+
+  // Dense applause: many individual hand-clap bursts spread over ~5 seconds.
+  for(let c=0;c<72;c++){
+   const t=now+.12+(c*0.067)+((c%5)*.009);
+   const dur=.045+(c%4)*.012;
+   const len=Math.max(64,Math.floor(ctx.sampleRate*dur));
+   const buf=ctx.createBuffer(1,len,ctx.sampleRate),d=buf.getChannelData(0);
+   for(let i=0;i<len;i++){
+    const env=Math.exp(-i/(len*.19));
+    d[i]=(Math.random()*2-1)*env;
+   }
+   const src=ctx.createBufferSource(),bp=ctx.createBiquadFilter(),g=ctx.createGain();
+   src.buffer=buf;bp.type='bandpass';bp.frequency.value=900+(c%9)*150;bp.Q.value=.8;
+   g.gain.value=.17+(c%3)*.025;
+   src.connect(bp);bp.connect(g);g.connect(master);src.start(t);
+  }
+
+  // Repeated fan whistles.
+  [0.38,1.05,1.72,2.45,3.25,4.05].forEach((d,j)=>{
+   const o=ctx.createOscillator(),g=ctx.createGain();
+   o.type='sine';
+   const base=1350+(j%3)*180;
+   o.frequency.setValueAtTime(base,now+d);
+   o.frequency.exponentialRampToValueAtTime(base+700,now+d+.18);
+   o.frequency.exponentialRampToValueAtTime(base+380,now+d+.34);
+   g.gain.setValueAtTime(.0001,now+d);
+   g.gain.exponentialRampToValueAtTime(.16,now+d+.025);
+   g.gain.setValueAtTime(.13,now+d+.22);
+   g.gain.exponentialRampToValueAtTime(.0001,now+d+.43);
+   o.connect(g);g.connect(master);o.start(now+d);o.stop(now+d+.45);
+  });
+
+  // Extra crowd-like noisy swell under the applause.
+  const crowdLen=Math.floor(ctx.sampleRate*5.1),crowdBuf=ctx.createBuffer(1,crowdLen,ctx.sampleRate),crowdData=crowdBuf.getChannelData(0);
+  for(let i=0;i<crowdLen;i++) crowdData[i]=(Math.random()*2-1);
+  const crowd=ctx.createBufferSource(),crowdBP=ctx.createBiquadFilter(),crowdG=ctx.createGain();
+  crowd.buffer=crowdBuf;crowdBP.type='bandpass';crowdBP.frequency.value=780;crowdBP.Q.value=.45;
+  crowdG.gain.setValueAtTime(.0001,now);crowdG.gain.linearRampToValueAtTime(.075,now+.25);
+  crowdG.gain.setValueAtTime(.06,now+4.2);crowdG.gain.exponentialRampToValueAtTime(.0001,now+5.1);
+  crowd.connect(crowdBP);crowdBP.connect(crowdG);crowdG.connect(master);crowd.start(now);
+
+  setTimeout(()=>ctx.close().catch(()=>{}),6200);
+ }catch(e){console.warn('Celebration audio unavailable',e)}
+}
+function celebrate(message){
+ const box=document.getElementById('confetti');
+ const msg=document.getElementById('celebrateMsg');
+ const bits=['🎉','🎊','✨','⭐','💫','👏','🥳','◆','●'];
+ box.innerHTML=Array.from({length:150},(_,i)=>{
+   const size=13+(i*7)%18,rot=(i*47)%360;
+   return `<i style="left:${(i*37)%100}%;font-size:${size}px;transform:rotate(${rot}deg);--x:${(i%2?1:-1)*(25+(i*17)%145)}px;animation-delay:${(i%12)*.035}s">${bits[i%bits.length]}</i>`;
+ }).join('');
+ if(msg){
+  msg.textContent=message||(lang==='ar'?'🎉 برافو! عاش!':'🎉 Amazing! Great job!');
+  msg.classList.remove('show');void msg.offsetWidth;msg.classList.add('show');
+ }
+ celebrationSound();
+ setTimeout(()=>box.innerHTML='',6500);
 }
 syncSound();
 function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1500)}
@@ -774,4 +1111,24 @@ if(deviceUser&&members.some(m=>m.id===deviceUser)){
 }
 render();
 </script>
+<script>
+
+const fhMusicSoundBtn=document.getElementById('soundBtn');
+if(fhMusicSoundBtn){
+ fhMusicSoundBtn.addEventListener('click',()=>{
+  setTimeout(()=>{
+   if(soundOn){ if(!bgMusicStarted)startBackgroundMusic(); }
+   else stopBackgroundMusic();
+  },0);
+ });
+}
+
+</script>
+
+<script>
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.warn));
+}
+</script>
+
 </body></html>
