@@ -499,6 +499,7 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Family Hub">
 
+<link rel="stylesheet" href="./family-fun.css">
 </head>
 <body class="authLocked">
 <div class="loginGate" id="loginGate">
@@ -554,6 +555,7 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
  </div>
 
  <section id="home" class="page active">
+<section id="familyFun" hidden aria-label="ساعة البيت والترحيب ومواعيد الصلاة"><div class="funHead"><div><small>⏰ ساعة البيت · توقيت القاهرة</small><time id="familyClock"></time></div><div><p id="funPhrase"></p><button id="funWelcome" type="button">🔊 اسمع الترحيب</button></div></div><div class="funControls"><label><input id="funVoice" type="checkbox">ترحيب وتشجيع بصوت</label><label><input id="funPrayer" type="checkbox">ذكّرني بالصلاة وأنا فاتح التطبيق</label><label>المدينة <select id="funCity"><option value="Sheikh Zayed">الشيخ زايد</option><option value="Cairo">القاهرة</option><option value="Giza">الجيزة</option><option value="Alexandria">الإسكندرية</option></select></label><button id="funTestPrayer" type="button">🕌 جرّب صوت التذكير</button></div><p id="prayerNext"></p><div id="prayerList"></div><small id="funStatus" role="status"></small><small>التذكير الصوتي والتطبيق مفتوح فقط؛ كتم الصوت العام يوقف الكلام. المواعيد محسوبة بواسطة AlAdhan بالطريقة المصرية، وقد تختلف قليلًا عن المسجد المحلي.</small></section>
   <div class="hero"><div class="heroText"><div class="streak">🔥 <span id="streakText">Family Streak</span></div><div class="heroTitle" id="heroTitle" style="margin-top:10px">خلّينا نخلي الشهر تحت السيطرة</div><div class="heroSub" id="heroSub">كل خطوة صغيرة بتفرق في ميزانية ومهام البيت.</div></div><div class="heroArt"><img src="./assets/family-pixar-final.webp" width="1448" height="1086" alt="عيلتنا مع بعض" decoding="async"></div></div>
   <div class="monthStrip"><div><span class="muted" id="activeMonthHint">ميزانية الشهر اللي بتتابعه</span><strong id="activeMonthLabel"></strong></div><div class="monthActions" data-parent-month hidden><button type="button" class="btn primary" id="homeNewMonthBtn" onclick="openMonthManager('new')">✨ شهر جديد</button><button type="button" class="btn ghost" id="homeArchiveBtn" onclick="openMonthManager('old')">🗂️ الشهور القديمة</button></div></div>
   <div class="cards">
@@ -1108,6 +1110,7 @@ function setThisMonth(){useMonth(FHMonths.current())}
 function reportFinance(){const vf=visibleFinance(),a=reportFrom?.value||'',b=reportTo?.value||'';if(a&&b&&a>b)return [];return vf.filter(x=>(!a||x.date>=a)&&(!b||x.date<=b))}
 function typeLabel(t){if(lang==='en')return t==='income'?'Income':t==='expense'?'Spent':'Saved';return t==='income'?(isParent()?'دخل':'فلوس أخدتها'):t==='expense'?(isParent()?'مصروف':'فلوس صرفتها'):(isParent()?'ادخار':'فلوس وفرتها')}
 function render(){
+ if(window.FHFun)window.FHFun.refresh();
  if(typeof syncAccountStyle==='function')syncAccountStyle();
  if(typeof renderUserStyles==='function')renderUserStyles();
  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.getElementById('lang').textContent=lang==='ar'?'EN':'AR';
@@ -1334,6 +1337,7 @@ function celebrationSound(){
  }catch(e){console.warn('Celebration audio unavailable',e)}
 }
 function celebrate(message){
+ if(window.FHFun)window.FHFun.cheer();
  const box=document.getElementById('confetti');
  const msg=document.getElementById('celebrateMsg');
  const bits=['🎉','🎊','✨','⭐','💫','👏','🥳','◆','●'];
@@ -1431,4 +1435,5 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
 <script src="./user-style.js"></script>
 <script src="./data-format.js"></script>
 <script src="./data-management.js"></script>
+<script src="./family-fun.js"></script>
 </body></html>
