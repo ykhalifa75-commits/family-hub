@@ -572,7 +572,7 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
  </section>
 
  <section id="finance" class="page">
-  <div class="sectionhead"><h2 data-t="financeTitle">الدخل والمصروفات</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="monthManageBtn" data-parent-month hidden onclick="openMonthManager()">🗓️ إدارة الشهر</button><button class="btn primary" onclick="openFinance()">＋ <span data-t="add">إضافة</span></button></div></div>
+  <div class="sectionhead"><h2 data-t="financeTitle">الدخل والمصروفات</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" data-parent-month hidden onclick="openDataManager()">💾 البيانات والتقارير / Data & reports</button><button class="btn ghost" id="monthManageBtn" data-parent-month hidden onclick="openMonthManager()">🗓️ إدارة الشهر</button><button class="btn primary" onclick="openFinance()">＋ <span data-t="add">إضافة</span></button></div></div>
 
   <div class="card" style="margin-bottom:14px">
    <div class="reportbar">
@@ -659,6 +659,31 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
  <button class="btn primary" id="saveRecoveredPasswordBtn" style="width:100%" onclick="saveRecoveredPassword()">حفظ كلمة المرور الجديدة</button>
 </div></div>
 
+<div class="modal" id="dataManagerModal" role="dialog" aria-modal="true" aria-labelledby="dataManagerTitle"><div class="modalbox">
+ <button type="button" class="modalClose" aria-label="إغلاق / Close" onclick="closeDataManager()">×</button>
+ <h2 id="dataManagerTitle">💾 البيانات والتقارير / Data & reports</h2>
+ <p class="muted">لبابا وماما فقط / Parents only</p>
+ <p id="dataStatus" role="status" aria-live="polite" style="white-space:pre-line;padding:12px;background:var(--bg);border-radius:12px"></p>
+ <section class="monthSection"><h3>١. نسخة كاملة / Full backup</h3>
+ <p>ملف لاسترجاع المعاملات والمهام والأهداف ومساهماتها. الحسابات والصور والإعدادات بتفضل موجودة، ومش جزء من الملف. احفظه في مكان خاص.<br>Restore-ready data file. Accounts, photos and settings are kept separately. Store it privately.</p>
+ <button type="button" class="btn primary" onclick="downloadFamilyBackup()">⬇ نسخة كاملة JSON / Full backup</button></section>
+ <section class="monthSection"><h3>٢. التقارير / Reports</h3>
+ <div class="field"><label for="dataReportScope">الفترة / Period</label><select id="dataReportScope" onchange="updateDataConfirm()"><option value="all">كل الفترات / All periods</option><option value="month">شهر محدد / Selected month</option></select></div>
+ <div class="field"><label for="dataReportMonth">الشهر / Month</label><input id="dataReportMonth" type="month" disabled></div>
+ <div class="monthActions"><button type="button" class="btn ghost" onclick="exportFamilyExcel()">📊 Excel .xlsx</button><button type="button" class="btn ghost" onclick="printFamilyReport()">📄 طباعة / حفظ PDF</button></div>
+ <p class="muted">PDF بيفتح تقرير للطباعة؛ اختار الحفظ أو المشاركة PDF من جهازك. الأهداف بتظهر برصيدها التراكمي، والحركات والمهام حسب الفترة.<br>PDF opens a printable report. Save/share a PDF using your device. Goal balances are lifetime; transactions and tasks follow the period.</p></section>
+ <section class="monthSection"><h3>٣. استرجاع نسخة / Restore</h3>
+ <p>اختار نسخة JSON كاملة من نفس الأسرة. السجلات بتترجع بنفس معرفاتها بدون تكرار، وقد تستبدل قيمها الحالية؛ السجلات الجديدة غير الموجودة بالملف بتفضل محفوظة.<br>Restore original IDs without duplicates. Existing values may be overwritten; newer unrelated records stay.</p>
+ <input id="dataBackupFile" type="file" accept=".json,application/json" aria-label="نسخة احتياطية / Backup" onchange="readFamilyBackup(this)">
+ <p id="restoreDataPreview" class="muted"></p>
+ <div class="field"><label for="restoreDataConfirm">اكتب «استرجاع» للتأكيد / Type استرجاع</label><input id="restoreDataConfirm" autocomplete="off" oninput="updateDataConfirm()"></div>
+ <button type="button" class="btn primary" id="restoreFamilyDataBtn" onclick="restoreFamilyData()" disabled>استرجاع البيانات / Restore data</button></section>
+ <section class="monthSection"><h3>٤. مسح بيانات الأسرة / Clear family data</h3>
+ <p role="note">هيمسح المعاملات والمهام والأهداف ومساهماتها لكل الأسرة. الحسابات والصور والإعدادات هتفضل. المسح والاسترجاع على دفعات؛ لو النت أو الصلاحيات وقفوا العملية ممكن تتم جزئيًا، وساعتها احتفظ بالنسخة للاسترجاع. يفضّل محدش يضيف بيانات أثناء العملية.<br>Clears shared transactions, tasks and goals. Accounts, photos and settings stay. Batch operations can stop partway; keep your backup and avoid simultaneous edits.</p>
+ <label style="display:flex;gap:10px;align-items:center"><input id="backupSavedCheck" type="checkbox" style="width:auto" onchange="updateDataConfirm()">حفظت النسخة الكاملة على جهازي / I saved the full backup</label>
+ <div class="field"><label for="resetDataConfirm">اكتب «حذف الكل» / Type حذف الكل</label><input id="resetDataConfirm" autocomplete="off" oninput="updateDataConfirm()"></div>
+ <button type="button" class="btn dangerBtn" id="resetFamilyDataBtn" onclick="resetFamilyData()" disabled>مسح بيانات الأسرة نهائيًا / Clear family data</button></section>
+</div></div>
 <div class="modal" id="monthManagerModal" role="dialog" aria-modal="true" aria-labelledby="monthManagerTitle"><div class="modalbox">
  <button type="button" class="modalClose" aria-label="إغلاق / Close" onclick="closeMonthManager()">×</button>
  <h2 id="monthManagerTitle">🗓️ الشهور والأرشيف</h2>
@@ -1380,4 +1405,6 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
 }
 </script>
 
+<script src="./data-format.js"></script>
+<script src="./data-management.js"></script>
 </body></html>
