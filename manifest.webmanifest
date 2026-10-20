@@ -1,7 +1,7 @@
 {
   "name": "Family Hub",
   "short_name": "Family Hub",
-  "description": "Family tasks, finance, savings goals and achievements in one place.",
+  "description": "بيتنا منظم.. مع بعض. مصروفات ومهام وأهداف العيلة في مكان واحد.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -20,5 +20,7 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "lang": "ar",
+  "dir": "rtl"
 }

@@ -1,8 +1,32 @@
-const CACHE='family-hub-v3-smooth-intro';
-const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE))));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET') return;
-  e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r;}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));
+const CACHE = 'family-hub-v14-apple-icon';
+const CORE = ['./assets/family-pixar-final.webp', './', './index.html', './months.js', './month-controls.js', './vendor/supabase-2.118.0.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './family-hub-apple-v14.png', './apple-touch-icon-precomposed.png'];
+const CORE_URLS = new Set(CORE.map(path => new URL(path, self.location.href).href));
+self.addEventListener('install', event => {
+  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)));
+});
+self.addEventListener('activate', event => event.waitUntil(Promise.all([
+  self.clients.claim(),
+  caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('family-hub-') && key !== CACHE).map(key => caches.delete(key))))
+])));
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
+  // Only cache the app shell. Account, family and authentication responses must never be cached.
+  if (request.method !== 'GET' || url.origin !== self.location.origin || (!CORE_URLS.has(url.href) && request.mode !== 'navigate')) return;
+  event.respondWith(fetch(request).then(response => {
+    if (response.ok && !response.redirected && CORE_URLS.has(url.href)) {
+      const copy = response.clone();
+      event.waitUntil(caches.open(CACHE).then(cache => cache.put(request, copy)));
+    }
+    return response;
+  }).catch(async () => {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    if (request.mode === 'navigate') {
+      const shell = await caches.match('./index.html');
+      if (shell) return shell;
+    }
+    return Response.error();
+  }));
 });
