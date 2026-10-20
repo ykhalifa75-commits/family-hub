@@ -1,7 +1,6 @@
 /* Personalized clock and opt-in spoken encouragement. No account or financial data leaves this module. */
 (() => {
 'use strict';
-const names={yasser:'ياسو',riham:'ريما',hamza:'ميزو',ismail:'سمسم'};
 const prayers=[['Fajr','الفجر'],['Dhuhr','الظهر'],['Asr','العصر'],['Maghrib','المغرب'],['Isha','العشاء']];
 const cities={'Sheikh Zayed':'الشيخ زايد',Cairo:'القاهرة',Giza:'الجيزة',Alexandria:'الإسكندرية'};
 const zone='Africa/Cairo';
@@ -11,10 +10,9 @@ const el=id=>document.getElementById(id);
 const key=()=> 'fh_fun_v1_'+familyId+'_'+currentUser;
 function read(){try{return JSON.parse(localStorage.getItem(key())||'{}')||{}}catch{return {}}}
 function save(){try{localStorage.setItem(key(),JSON.stringify(prefs))}catch{}}
-function nick(){return names[currentUser]||members.find(m=>m.id===currentUser)?.ar||'يا بطل'}
 function parts(now=new Date()){return Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23'}).formatToParts(now).map(p=>[p.type,p.value]))}
 function day(now=new Date()){const p=parts(now);return p.year+'-'+p.month+'-'+p.day}
-function greeting(){const h=+parts().hour;return (h<12?'صباح الفل يا ':'مساء الفل يا ')+nick()+'! منوّر بيتنا. جاهز ليوم حلو؟'}
+function greeting(){const h=+parts().hour;return (h<12?'صباح الفل! ':'مساء الفل! ')+'منوّر بيتنا. جاهز ليوم حلو؟'}
 function speak(text,force=false){
  el('funPhrase').textContent=text;
  if(!('speechSynthesis' in window)){el('funStatus').textContent='جهازك لا يوفر قراءة صوتية. الرسالة ظاهرة قدامك.';return}
@@ -76,20 +74,20 @@ function tick(){
  let seen='';try{seen=localStorage.getItem(storageKey)||''}catch{}
  if(marker===lastPrayer||marker===seen)return;
  lastPrayer=marker;try{localStorage.setItem(storageKey,marker)}catch{}
- speak('يا '+nick()+'، جه وقت صلاة '+due.label+'. يلا نقوم نصلي، ربنا يتقبل منك.');
+ speak('جه وقت صلاة '+due.label+'. يلا نقوم نصلي، ربنا يتقبل منك.');
 }
 el('funVoice').addEventListener('change',e=>{unlocked=true;prefs.voice=e.target.checked;save();if(prefs.voice)speak(greeting());else stop()});
 el('funPrayer').addEventListener('change',e=>{unlocked=true;prefs.prayer=e.target.checked;save();el('funStatus').textContent=prefs.prayer?'تذكير الصلاة اتفعّل والتطبيق مفتوح. فعّل الترحيب الصوتي كمان لو عايزه بصوت.':'تذكير الصلاة اتوقف.'});
 el('funCity').addEventListener('change',e=>{prefs.city=e.target.value;save();requestId++;loading=false;nextRetry=0;schedule=null;el('prayerList').replaceChildren();tick()});
 el('funWelcome').addEventListener('click',()=>{unlocked=true;speak(greeting(),true)});
-el('funTestPrayer').addEventListener('click',()=>{unlocked=true;speak('يا '+nick()+'، ده مثال للتذكير. لما ييجي وقت الصلاة هقولك يلا نقوم نصلي.',true)});
+el('funTestPrayer').addEventListener('click',()=>{unlocked=true;speak('ده مثال للتذكير. لما ييجي وقت الصلاة هقولك يلا نقوم نصلي.',true)});
 document.addEventListener('pointerdown',()=>{
  unlocked=true;if(!active||!prefs.voice||!soundOn||greeted===active)return;
  greeted=active;speak(greeting());
 }, {passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else{paint();tick()}});
 document.getElementById('soundBtn')?.addEventListener('click',()=>{if(!soundOn)stop()});
-window.FHFun={refresh:paint,cheer:()=>speak(['برافو عليك يا '+nick()+'! عاش، خطوة كمان لقدّام.','الله ينور يا '+nick()+'! شغل أبطال.','عاش يا '+nick()+'! كمّل كده، إحنا فخورين بيك.'][Math.floor(Math.random()*3)])};
+window.FHFun={refresh:paint,cheer:()=>speak(['برافو عليك! عاش، خطوة كمان لقدّام.','الله ينور! شغل أبطال.','عاش يا بطل! كمّل كده، إحنا فخورين بيك.'][Math.floor(Math.random()*3)])};
 setInterval(()=>{paint()},1000);
 paint();
 })();
