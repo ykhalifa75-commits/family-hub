@@ -1,7 +1,7 @@
 /* Personalized clock and opt-in spoken encouragement. No account or financial data leaves this module. */
 (() => {
 'use strict';
-const names={yasser:'ياسسو',riham:'ريما',hamza:'ميزو',ismail:'سمسم'};
+const names={yasser:'ياسو',riham:'ريما',hamza:'ميزو',ismail:'سمسم'};
 const prayers=[['Fajr','الفجر'],['Dhuhr','الظهر'],['Asr','العصر'],['Maghrib','المغرب'],['Isha','العشاء']];
 const cities={'Sheikh Zayed':'الشيخ زايد',Cairo:'القاهرة',Giza:'الجيزة',Alexandria:'الإسكندرية'};
 const zone='Africa/Cairo';
