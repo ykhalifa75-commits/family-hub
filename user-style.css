@@ -1,0 +1,27 @@
+.styleChoices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.styleChoice{min-height:90px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:12px;font:inherit;font-weight:700;cursor:pointer}.styleChoice[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 2px var(--line)}.styleChoice:focus-visible{outline:3px solid var(--accent2);outline-offset:3px}.styleSwatches{display:flex;justify-content:center;margin-bottom:8px}.styleSwatches i{display:block;width:28px;height:28px;border-radius:50%;border:1px solid #64748b88;margin-inline:-2px}.styleChoice:disabled{cursor:wait;opacity:.7}
+body[data-palette=forest]{--style-primary:#164b40;--style-deep:#0c2e28;--style-accent:#77d4ac;--style-soft:#e8f4ee;--style-ink:#153b30;--style-night:#102a23;--style-nightcard:#183b31}
+body[data-palette=ocean]{--style-primary:#164c79;--style-deep:#102d4b;--style-accent:#78c7ee;--style-soft:#eaf4fb;--style-ink:#163c59;--style-night:#102337;--style-nightcard:#19354f}
+body[data-palette=violet]{--style-primary:#513579;--style-deep:#2b1c43;--style-accent:#c9aff2;--style-soft:#f1edf8;--style-ink:#39294f;--style-night:#211a2e;--style-nightcard:#322642}
+body[data-palette=berry]{--style-primary:#733952;--style-deep:#421f31;--style-accent:#efb4c7;--style-soft:#fbecf1;--style-ink:#542a3e;--style-night:#2c1923;--style-nightcard:#442737}
+body[data-palette]:not([data-palette=navy]){--bg:var(--style-soft);--card:#fff;--ink:var(--style-ink);--muted:#5e6573;--accent:var(--style-primary);--accent2:var(--style-accent);--line:color-mix(in srgb,var(--style-primary) 20%,white);--gold:var(--style-accent);--navy:var(--style-deep);--teal:var(--style-primary);background:var(--bg)}
+body[data-palette]:not([data-palette=navy]) .side,body[data-palette]:not([data-palette=navy]) .hero{background:linear-gradient(130deg,var(--style-primary),var(--style-deep));border-color:var(--style-accent)}
+body[data-palette]:not([data-palette=navy]) .brand small,body[data-palette]:not([data-palette=navy]) .heroSub{color:#fff}
+body[data-palette]:not([data-palette=navy]) .nav button.active{background:var(--style-accent);color:var(--style-deep)}
+body[data-palette]:not([data-palette=navy]) .nav button:hover:not(.active){background:var(--style-primary);color:#fff}
+body[data-palette]:not([data-palette=navy]) .metric,body[data-palette]:not([data-palette=navy]) .goalCard{background:var(--card);border-top-color:var(--style-primary)}
+body[data-palette]:not([data-palette=navy]) .metric .iconbubble,body[data-palette]:not([data-palette=navy]) .goalIcon,body[data-palette]:not([data-palette=navy]) .familyAvatar,body[data-palette]:not([data-palette=navy]) .avatar{background:var(--style-soft);color:var(--style-primary);border-color:var(--style-accent)}
+body[data-palette]:not([data-palette=navy]) .primary{background:var(--style-primary);color:#fff;border-color:var(--style-primary)}
+body[data-palette]:not([data-palette=navy]) .goalProgress i,body[data-palette]:not([data-palette=navy]) .bar i{background:var(--style-primary)}
+body[data-palette]:not([data-palette=navy]) .progressRing{--ring:var(--style-primary)!important}
+body[data-palette]:not([data-palette=navy]) .pill{background:var(--style-soft);color:var(--style-primary)}
+body[data-palette]:not([data-palette=navy]) .field input:focus,body[data-palette]:not([data-palette=navy]) .field select:focus{outline-color:var(--style-primary)}
+body[data-palette]:not([data-palette=navy]) .btn:focus-visible,body[data-palette]:not([data-palette=navy]) .nav button:focus-visible{outline-color:var(--style-accent)}
+body.dark[data-palette]:not([data-palette=navy]){--bg:var(--style-night);--card:var(--style-nightcard);--ink:#f6f7fb;--muted:#ccd2df;--line:#67717e;background:var(--bg)}
+body.dark[data-palette]:not([data-palette=navy]) .metric .iconbubble,body.dark[data-palette]:not([data-palette=navy]) .goalIcon{background:var(--style-primary);color:#fff}
+body.dark[data-palette]:not([data-palette=navy]) th{background:var(--style-deep);color:#fff}
+@media(max-width:360px){.styleChoices{gap:7px}.styleChoice{font-size:13px;padding:9px}}
+
+#userStyleModal{z-index:240}
+body[data-palette] .moneyTypeBtn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+body[data-palette] .kidWallet{background:linear-gradient(135deg,var(--accent),var(--navy));color:#fff}
+body.dark[data-palette] .taskFilter:not(.active),body.dark[data-palette] .taskOwnerBtn:not(.active),body.dark[data-palette] .moneyTypeBtn:not(.active){background:var(--card);color:var(--ink)}

@@ -492,6 +492,7 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
 @media(prefers-reduced-motion:reduce){#intro .familyPortraits{display:none!important}#intro .familyHug{opacity:1!important;transform:none!important}}
 
 </style>
+<link rel="stylesheet" href="./user-style.css">
 
 <meta name="theme-color" content="#0d2539">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -549,7 +550,7 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
 <main class="main">
  <div class="top">
   <div><h1 id="hello">أهلًا بيك في بيتنا 👋</h1><div class="muted" id="today"></div></div>
-  <div class="actions"><button class="userChip" id="userChip" onclick="openProfile()"><span class="mini" id="userEmoji">👨</span><b id="userName">حسابي</b></button><button class="btn ghost sound" id="themeBtn" title="Theme">🌙</button><button class="btn ghost sound" id="soundBtn" title="Sound">🔊</button><button class="btn ghost" id="motionToggle" title="تشغيل أو إيقاف الحركة / Toggle motion" aria-pressed="false">◌</button><button class="btn ghost" id="replayIntro" title="إعادة المقدمة / Replay intro">✨</button><button class="btn ghost" id="lang">EN</button><button class="btn ghost" id="logoutBtn" onclick="logout()">🚪 خروج</button><button class="btn primary" id="quick">＋ <span data-t="addExpense">مصروف</span></button></div>
+  <div class="actions"><button class="userChip" id="userChip" onclick="openProfile()"><span class="mini" id="userEmoji">👨</span><b id="userName">حسابي</b></button><button class="btn ghost" id="styleToolbarBtn" onclick="openUserStyle()" title="ألواني / My colors">🎨</button><button class="btn ghost sound" id="themeBtn" title="Theme">🌙</button><button class="btn ghost sound" id="soundBtn" title="Sound">🔊</button><button class="btn ghost" id="motionToggle" title="تشغيل أو إيقاف الحركة / Toggle motion" aria-pressed="false">◌</button><button class="btn ghost" id="replayIntro" title="إعادة المقدمة / Replay intro">✨</button><button class="btn ghost" id="lang">EN</button><button class="btn ghost" id="logoutBtn" onclick="logout()">🚪 خروج</button><button class="btn primary" id="quick">＋ <span data-t="addExpense">مصروف</span></button></div>
  </div>
 
  <section id="home" class="page active">
@@ -636,10 +637,16 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
  <div class="field"><label for="contributionSource">المبلغ منين؟ / Source</label><select id="contributionSource"><option value="monthly">تحويش شهري / Monthly</option><option value="bonus">بونص سنوي / Annual bonus</option><option value="extra">مبلغ إضافي / Extra</option></select></div><div class="field"><label for="contributionDate">التاريخ / Date</label><input id="contributionDate" type="date"></div><p class="muted">المساهمة بتتسجل باسم الحساب المفتوح وتتحسب مرة واحدة ضمن ادخار الشهر.</p><button class="btn primary" id="addSavingsConfirmBtn" style="width:100%" onclick="confirmAddToGoal()">＋ إضافة الادخار</button>
 </div></div>
 
+<div class="modal" id="userStyleModal" role="dialog" aria-modal="true" aria-labelledby="userStyleTitle"><div class="modalbox" style="max-width:480px">
+ <div class="sectionhead"><h2 id="userStyleTitle">🎨 ألواني / My colors</h2><button type="button" class="btn ghost" onclick="closeUserStyle()" aria-label="إغلاق / Close">×</button></div>
+ <p id="userStyleHelp" class="muted"></p><div class="styleChoices" id="userStyleChoices"></div>
+ <button type="button" class="btn ghost" id="userStyleMode" style="width:100%" onclick="toggleAccountStyleMode()">🌙 الوضع الداكن / Dark mode</button>
+ <p class="muted" role="status" aria-live="polite" id="userStyleStatus"></p>
+</div></div>
 <div class="modal" id="profileModal"><div class="modalbox" style="max-width:460px">
  <div class="sectionhead"><h2 id="profileModalTitle">حسابي</h2><button class="btn ghost" onclick="closeProfileModal()">✕</button></div>
  <div style="text-align:center"><div id="profilePreview" style="font-size:58px">👨</div><h2 id="profileDisplayName" style="margin:8px 0 0"></h2></div>
- <div class="field"><label id="characterLabel">اختار Character</label><div class="avatarChoices" id="avatarChoices"></div></div>
+ <button type="button" class="btn ghost" style="width:100%;margin:14px 0" onclick="openUserStyle()">🎨 ألوان التطبيق / App colors</button><div class="field"><label id="characterLabel">اختار Character</label><div class="avatarChoices" id="avatarChoices"></div></div>
  <label class="uploadAvatarLabel" for="avatarFile" id="uploadAvatarLabel">📷 رفع صورة من الجهاز</label>
  <input id="avatarFile" type="file" accept="image/*" hidden>
  <div class="muted" id="avatarHelp" style="font-size:12px;margin-top:8px;text-align:center">الصورة هتتحفظ على حسابك في Family Hub</div>
@@ -866,11 +873,12 @@ async function finishLogin(){
  document.getElementById('pinModal').classList.remove('show');
  document.getElementById('loginGate').classList.add('hidden');
  document.body.classList.remove('authLocked');
+ if(typeof loadUserStyle==='function')await loadUserStyle();
  tone('success');applyRole();render();startRealtime();
 }
 function cancelPin(){document.getElementById('pinModal').classList.remove('show');pendingUser=null;pinEntry=''}
-async function logout(){await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;document.body.classList.add('authLocked');document.getElementById('loginGate').classList.add('hidden');renderProfiles();tone('tap');if(deviceUser&&members.some(m=>m.id===deviceUser)){setTimeout(()=>loginAs(deviceUser),0)}else{document.getElementById('loginGate').classList.remove('hidden')}}
-function changeDeviceUser(){document.body.classList.add('authLocked');LS.removeItem('fh_device_user');deviceUser=null;pendingUser=null;document.getElementById('pinModal').classList.remove('show');document.getElementById('loginGate').classList.remove('hidden');renderProfiles();tone('tap')}
+async function logout(){await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;document.body.classList.add('authLocked');if(typeof syncAccountStyle==='function')syncAccountStyle();document.getElementById('loginGate').classList.add('hidden');renderProfiles();tone('tap');if(deviceUser&&members.some(m=>m.id===deviceUser)){setTimeout(()=>loginAs(deviceUser),0)}else{document.getElementById('loginGate').classList.remove('hidden')}}
+function changeDeviceUser(){document.body.classList.add('authLocked');if(typeof syncAccountStyle==='function')syncAccountStyle();LS.removeItem('fh_device_user');deviceUser=null;pendingUser=null;document.getElementById('pinModal').classList.remove('show');document.getElementById('loginGate').classList.remove('hidden');renderProfiles();tone('tap')}
 function applyRole(){
  if(!currentUser)return;
  let m=members.find(x=>x.id===currentUser);
@@ -1088,6 +1096,8 @@ function setThisMonth(){useMonth(FHMonths.current())}
 function reportFinance(){const vf=visibleFinance(),a=reportFrom?.value||'',b=reportTo?.value||'';if(a&&b&&a>b)return [];return vf.filter(x=>(!a||x.date>=a)&&(!b||x.date<=b))}
 function typeLabel(t){if(lang==='en')return t==='income'?'Income':t==='expense'?'Spent':'Saved';return t==='income'?(isParent()?'دخل':'فلوس أخدتها'):t==='expense'?(isParent()?'مصروف':'فلوس صرفتها'):(isParent()?'ادخار':'فلوس وفرتها')}
 function render(){
+ if(typeof syncAccountStyle==='function')syncAccountStyle();
+ if(typeof renderUserStyles==='function')renderUserStyles();
  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.getElementById('lang').textContent=lang==='ar'?'EN':'AR';
  let cm=members.find(x=>x.id===currentUser)||members[0];document.getElementById('hello').textContent=(lang==='ar'?'أهلًا بيك في بيتنا 👋':'Welcome home 👋');
  document.getElementById('today').textContent=new Date().toLocaleDateString(lang==='ar'?'ar-EG':'en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
@@ -1194,7 +1204,7 @@ function tone(kind='tap'){
 }
 function syncSound(){soundBtn.textContent=soundOn?'🔊':'🔇'}
 soundBtn.onclick=()=>{soundOn=!soundOn;LS.setItem('fh_sound',soundOn?'on':'off');syncSound();tone('tap')};
-let dark=LS.getItem('fh_theme')==='dark';const themeBtn=document.getElementById('themeBtn');
+let dark=false;const themeBtn=document.getElementById('themeBtn');
 function syncTheme(){document.body.classList.toggle('dark',dark);themeBtn.textContent=dark?'☀️':'🌙'}
 themeBtn.onclick=()=>{dark=!dark;LS.setItem('fh_theme',dark?'dark':'light');syncTheme();tone('tap')};syncTheme();
 
@@ -1405,6 +1415,7 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
 }
 </script>
 
+<script src="./user-style.js"></script>
 <script src="./data-format.js"></script>
 <script src="./data-management.js"></script>
 </body></html>

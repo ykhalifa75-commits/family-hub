@@ -1,5 +1,5 @@
-const CACHE = 'family-hub-v16-backup-reports';
-const CORE = ['./data-format.js', './data-management.js', './assets/family-pixar-final.webp', './', './index.html', './months.js', './month-controls.js', './vendor/supabase-2.118.0.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './family-hub-apple-v14.png', './apple-touch-icon-precomposed.png'];
+const CACHE = 'family-hub-v17-user-colors';
+const CORE = ['./user-style.js', './user-style.css', './data-format.js', './data-management.js', './assets/family-pixar-final.webp', './', './index.html', './months.js', './month-controls.js', './vendor/supabase-2.118.0.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './family-hub-apple-v14.png', './apple-touch-icon-precomposed.png'];
 const CORE_URLS = new Set(CORE.map(path => new URL(path, self.location.href).href));
 self.addEventListener('install', event => {
   self.skipWaiting();
