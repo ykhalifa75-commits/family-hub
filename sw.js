@@ -1,4 +1,4 @@
-const CACHE = 'family-hub-v14-apple-icon';
+const CACHE = 'family-hub-v15-kids-computers';
 const CORE = ['./assets/family-pixar-final.webp', './', './index.html', './months.js', './month-controls.js', './vendor/supabase-2.118.0.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './family-hub-apple-v14.png', './apple-touch-icon-precomposed.png'];
 const CORE_URLS = new Set(CORE.map(path => new URL(path, self.location.href).href));
 self.addEventListener('install', event => {

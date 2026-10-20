@@ -918,9 +918,12 @@ function presetGoal(kind){
  if(goals.some(g=>g.nameAr===name)){showToast('الهدف موجود بالفعل');return}
  openGoal();gName.value=name;gTarget.value=target||'';gSaved.value='0';
 }
+function isComputerGoal(g){return !!g&&/كمبيوتر|كومبيوتر|حاسوب|حواسيب|computer|laptop/i.test((g.nameAr||'')+' '+(g.nameEn||''))}
+function canContributeToGoal(g){return !!g&&(isParent()||((currentUser==='hamza'||currentUser==='ismail')&&isComputerGoal(g)))}
+function visibleGoals(){return goals.filter(g=>isParent()||isComputerGoal(g))}
 function goalHistory(g){
  const rows=finance.filter(t=>t.type==='saving'&&t.cat.startsWith('[goal:'+g.id+'] '));
- const sources={monthly:lang==='ar'?'شهري':'Monthly',bonus:lang==='ar'?'بونص':'Bonus',extra:lang==='ar'?'إضافي':'Extra'};
+ const sources={allowance:lang==='ar'?'من المصروف':'Pocket money',monthly:lang==='ar'?'شهري':'Monthly',bonus:lang==='ar'?'بونص':'Bonus',extra:lang==='ar'?'إضافي':'Extra'};
  return '<details style="margin-top:12px"><summary>'+ (lang==='ar'?'سجل مساهماتكم':'Contributions')+'</summary>'+rows.slice().reverse().map(t=>'<p>'+escapeHTML(person(memberKeyFromRow(t.member_id)))+' · '+money(t.amount)+' · '+escapeHTML(sources[t.cat.split('] ')[1]]||'')+' · '+escapeHTML(t.date)+'</p>').join('')+(rows.length?'':'<p>لسه مفيش مساهمات مسجلة / No contributions yet</p>')+'</details>';
 }
 function persistGoals(){LS.setItem('fh_goals',JSON.stringify(goals))}
@@ -929,7 +932,9 @@ async function saveGoal(){let name=gName.value.trim(),target=+gTarget.value,save
 let pendingSavingsGoalId=null;
 function addToGoal(id){
  const g=goals.find(x=>String(x.id)===String(id));
- if(!isParent()||!g||!familyId){showToast(lang==='ar'?'تعذر تحديد هدف الادخار':'Could not identify savings goal');return}
+ if(!canContributeToGoal(g)||!familyId){showToast(lang==='ar'?'تعذر تحديد هدف الادخار':'Could not identify savings goal');return}
+ const sourceSelect=document.getElementById('contributionSource');
+ sourceSelect.innerHTML=isParent()?'<option value="monthly">تحويش شهري / Monthly</option><option value="bonus">بونص سنوي / Annual bonus</option><option value="extra">مبلغ إضافي / Extra</option>':'<option value="allowance">من مصروفي / My pocket money</option>';
  pendingSavingsGoalId=id;document.getElementById('contributionDate').value=FHMonths.localDate();
  document.getElementById('addSavingsTitle').textContent=lang==='ar'?'إضافة ادخار':'Add savings';
  document.getElementById('addSavingsGoalLabel').textContent=lang==='ar'?'الهدف':'Goal';
@@ -949,7 +954,7 @@ function closeAddSavingsModal(){
 async function confirmAddToGoal(){
  const id=pendingSavingsGoalId;
  const g=goals.find(x=>String(x.id)===String(id));
- if(!isParent()||!g||!familyId){showToast(lang==='ar'?'تعذر تحديد هدف الادخار':'Could not identify savings goal');return}
+ if(!canContributeToGoal(g)||!familyId){showToast(lang==='ar'?'تعذر تحديد هدف الادخار':'Could not identify savings goal');return}
  const input=document.getElementById('addSavingsAmount');
  const val=Number(input.value);
  if(!Number.isFinite(val)||val<=0){showToast(lang==='ar'?'اكتب مبلغ صحيح أكبر من صفر':'Enter a valid amount greater than zero');input.focus();return}
@@ -959,7 +964,7 @@ async function confirmAddToGoal(){
  btn.dataset.busy='1';
  const date=document.getElementById('contributionDate').value;
  const source=document.getElementById('contributionSource').value;
- if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!['monthly','bonus','extra'].includes(source)){btn.disabled=false;btn.dataset.busy='0';return showToast('راجع التاريخ والمصدر')}
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!(isParent()?['monthly','bonus','extra']:['allowance']).includes(source)){btn.disabled=false;btn.dataset.busy='0';return showToast('راجع التاريخ والمصدر')}
  let result;
  try{result=await sb.from('transactions').insert({family_id:familyId,type:'saving',amount:val,category:`[goal:${id}] ${source}`,transaction_date:date,member_id:memberDbId(currentUser)});}catch(e){result={error:e}}
  btn.disabled=false;btn.dataset.busy='0';
@@ -1044,10 +1049,10 @@ en:{tag:'Our home, organized together',home:'Home',finance:'Finance',tasks:'Task
 
 function money(n){return new Intl.NumberFormat(lang==='ar'?'ar-EG':'en-EG').format(n)+' '+(lang==='ar'?'ج.م':'EGP')}
 function financeCategory(row){
- const match=/^\[goal:([^\]]+)\] (monthly|bonus|extra)$/.exec(row.cat||'');
+ const match=/^\[goal:([^\]]+)\] (monthly|bonus|extra|allowance)$/.exec(row.cat||'');
  if(!match)return row.cat;
  const goal=goals.find(g=>String(g.id)===match[1]);
- const source={monthly:lang==='ar'?'شهري':'Monthly',bonus:lang==='ar'?'بونص':'Bonus',extra:lang==='ar'?'إضافي':'Extra'}[match[2]];
+ const source={allowance:lang==='ar'?'من المصروف':'Pocket money',monthly:lang==='ar'?'شهري':'Monthly',bonus:lang==='ar'?'بونص':'Bonus',extra:lang==='ar'?'إضافي':'Extra'}[match[2]];
  return (goal?(lang==='ar'?goal.nameAr:goal.nameEn):(lang==='ar'?'هدف ادخار':'Savings goal'))+' · '+source;
 }
 function visibleFinance(){if(isParent())return finance; const myId=memberDbId(currentUser); return finance.filter(x=>myId&&x.member_id===myId)}
@@ -1084,7 +1089,7 @@ function render(){
   const totalSaved=goals.reduce((a,g)=>a+g.saved,0),totalTarget=goals.reduce((a,g)=>a+g.target,0),goalPct=totalTarget?Math.min(100,Math.round(totalSaved/totalTarget*100)):0;
   document.getElementById('savingsSummary').hidden=!isParent();document.getElementById('savingsSummary').innerHTML=`<div class="card"><span class="muted">${lang==='ar'?'إجمالي المدخر':'Total saved'}</span><b>${money(totalSaved)}</b></div><div class="card"><span class="muted">${lang==='ar'?'إجمالي الأهداف':'Total targets'}</span><b>${money(totalTarget)}</b></div><div class="card"><span class="muted">${lang==='ar'?'نسبة الإنجاز':'Progress'}</span><b>${goalPct}%</b></div>`;
  document.getElementById('sharedGoalSetup').hidden=!isParent();document.getElementById('addGoalBtn').hidden=!isParent();
- document.getElementById('goalGrid').innerHTML=(isParent()?goals:[]).map(g=>{let p=g.target>0?Math.min(100,Math.round(g.saved/g.target*100)):0;return `<div class="goalCard"><div class="goalIcon">${g.icon}</div><b>${escapeHTML(lang==='ar'?g.nameAr:g.nameEn)}</b><div class="goalAmount">${money(g.saved)}</div><div class="muted">${lang==='ar'?'من':'of'} ${money(g.target)} • ${p}%</div><div class="muted">${lang==='ar'?'فاضل':'Remaining'} ${money(Math.max(0,g.target-g.saved))}</div><div class="goalProgress"><i style="width:${p}%"></i></div><button class="btn ghost" style="width:100%;margin-top:14px" onclick="addToGoal('${g.id}')">${lang==='ar'?'＋ إضافة ادخار':'＋ Add savings'}</button>${goalHistory(g)}</div>`}).join('');
+ document.getElementById('goalGrid').innerHTML=visibleGoals().map(g=>{let p=g.target>0?Math.min(100,Math.round(g.saved/g.target*100)):0;return `<div class="goalCard"><div class="goalIcon">${g.icon}</div><b>${escapeHTML(lang==='ar'?g.nameAr:g.nameEn)}</b><div class="goalAmount">${money(g.saved)}</div><div class="muted">${lang==='ar'?'من':'of'} ${money(g.target)} • ${p}%</div><div class="muted">${lang==='ar'?'فاضل':'Remaining'} ${money(Math.max(0,g.target-g.saved))}</div><div class="goalProgress"><i style="width:${p}%"></i></div><button class="btn ghost" style="width:100%;margin-top:14px" onclick="addToGoal('${g.id}')">${lang==='ar'?(isParent()?'＋ إضافة ادخار':'＋ أحوّش من مصروفي'):(isParent()?'＋ Add savings':'＋ Save pocket money')}</button>${goalHistory(g)}</div>`}).join('');
  let wallet=vf.filter(x=>x.type==='saving').reduce((a,b)=>a+b.amount,0);
  document.getElementById('kidWallet').innerHTML=!isParent()?`<div class="kidWallet"><div>${lang==='ar'?'حصّالتي 💰':'My Wallet 💰'}</div><div class="bigMoney">${money(wallet)}</div><div style="opacity:.8">${lang==='ar'?'استمر في الادخار لتحقيق هدفك':'Keep saving toward your goal'}</div></div>`:'';
  renderTaskOwnerButtons(); updateTaskWords(); renderMonthStrip();
