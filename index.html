@@ -550,7 +550,7 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
 <main class="main">
  <div class="top">
   <div><h1 id="hello">أهلًا بيك في بيتنا 👋</h1><div class="muted" id="today"></div></div>
-  <div class="actions"><button class="userChip" id="userChip" onclick="openProfile()"><span class="mini" id="userEmoji">👨</span><b id="userName">حسابي</b></button><button class="btn ghost" id="styleToolbarBtn" onclick="openUserStyle()" title="ألواني / My colors">🎨</button><button class="btn ghost sound" id="themeBtn" title="Theme">🌙</button><button class="btn ghost sound" id="soundBtn" title="Sound">🔊</button><button class="btn ghost" id="motionToggle" title="تشغيل أو إيقاف الحركة / Toggle motion" aria-pressed="false">◌</button><button class="btn ghost" id="replayIntro" title="إعادة المقدمة / Replay intro">✨</button><button class="btn ghost" id="lang">EN</button><button class="btn ghost" id="logoutBtn" onclick="logout()">🚪 خروج</button><button class="btn primary" id="quick">＋ <span data-t="addExpense">مصروف</span></button></div>
+  <div class="actions"><button class="userChip" id="userChip" onclick="openProfile()"><span class="mini" id="userEmoji">👨</span><b id="userName">حسابي</b></button><button type="button" class="btn ghost" id="pushToolbarBtn" onclick="openPushSettings()" aria-label="الإشعارات / Notifications">🔔</button><button class="btn ghost" id="styleToolbarBtn" onclick="openUserStyle()" title="ألواني / My colors">🎨</button><button class="btn ghost sound" id="themeBtn" title="Theme">🌙</button><button class="btn ghost sound" id="soundBtn" title="Sound">🔊</button><button class="btn ghost" id="motionToggle" title="تشغيل أو إيقاف الحركة / Toggle motion" aria-pressed="false">◌</button><button class="btn ghost" id="replayIntro" title="إعادة المقدمة / Replay intro">✨</button><button class="btn ghost" id="lang">EN</button><button class="btn ghost" id="logoutBtn" onclick="logout()">🚪 خروج</button><button class="btn primary" id="quick">＋ <span data-t="addExpense">مصروف</span></button></div>
  </div>
 
  <section id="home" class="page active">
@@ -637,6 +637,17 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
  <div class="field"><label for="contributionSource">المبلغ منين؟ / Source</label><select id="contributionSource"><option value="monthly">تحويش شهري / Monthly</option><option value="bonus">بونص سنوي / Annual bonus</option><option value="extra">مبلغ إضافي / Extra</option></select></div><div class="field"><label for="contributionDate">التاريخ / Date</label><input id="contributionDate" type="date"></div><p class="muted">المساهمة بتتسجل باسم الحساب المفتوح وتتحسب مرة واحدة ضمن ادخار الشهر.</p><button class="btn primary" id="addSavingsConfirmBtn" style="width:100%" onclick="confirmAddToGoal()">＋ إضافة الادخار</button>
 </div></div>
 
+<div class="modal" id="pushSettingsModal" role="dialog" aria-modal="true" aria-labelledby="pushSettingsTitle" style="z-index:245"><div class="modalbox" style="max-width:500px">
+ <div class="sectionhead"><h2 id="pushSettingsTitle">🔔 إشعاراتي / Notifications</h2><button type="button" class="btn ghost" onclick="closePushSettings()" aria-label="إغلاق / Close">×</button></div>
+ <p>فعّل الإشعارات لكل حساب على جهازه. على الآيفون لازم تضيف التطبيق للشاشة الرئيسية وتفتحه منها.<br>Enable on each account and device. On iPhone, install on the Home Screen and open from its icon.</p>
+ <p id="pushStatus" role="status" aria-live="polite" class="muted"></p>
+ <div style="display:grid;gap:16px;margin:20px 0">
+ <label><input type="checkbox" id="pushTasks" checked style="width:auto"> ✅ مهامي وتذكيرات مواعيدها / My tasks & reminders</label>
+ <label><input type="checkbox" id="pushCompleted" checked style="width:auto"> 👏 إتمام مهام الأولاد — للوالدين / Kids' completed tasks — parents</label>
+ <label><input type="checkbox" id="pushGoals" checked style="width:auto"> 💻 مساهمات واكتمال هدف الكمبيوتر / Computer goal progress</label>
+ </div><div class="monthActions"><button type="button" class="btn primary" id="pushEnableBtn" data-push-action onclick="enableFamilyPush()" disabled>تفعيل / حفظ اختياراتي</button><button type="button" class="btn ghost" data-push-action onclick="testFamilyPush()" disabled>اختبار على جهازي / Test my device</button><button type="button" class="btn ghost" data-push-action onclick="disableFamilyPush()" disabled>إيقاف على الجهاز / Disable</button></div>
+ <p class="muted">الإشعار لا يعرض تفاصيل مالية على شاشة القفل. إيقاف نوع إشعار لا يغيّر بيانات الأسرة.<br>No financial details on the lock screen. Preferences do not change family data.</p>
+</div></div>
 <div class="modal" id="userStyleModal" role="dialog" aria-modal="true" aria-labelledby="userStyleTitle"><div class="modalbox" style="max-width:480px">
  <div class="sectionhead"><h2 id="userStyleTitle">🎨 ألواني / My colors</h2><button type="button" class="btn ghost" onclick="closeUserStyle()" aria-label="إغلاق / Close">×</button></div>
  <p id="userStyleHelp" class="muted"></p><div class="styleChoices" id="userStyleChoices"></div>
@@ -875,9 +886,10 @@ async function finishLogin(){
  document.body.classList.remove('authLocked');
  if(typeof loadUserStyle==='function')await loadUserStyle();
  tone('success');applyRole();render();startRealtime();
+ const pushPage=new URL(location.href).searchParams.get('notification');if(['tasks','goals'].includes(pushPage))document.querySelector('.nav button[data-page="'+pushPage+'"]')?.click();
 }
 function cancelPin(){document.getElementById('pinModal').classList.remove('show');pendingUser=null;pinEntry=''}
-async function logout(){await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;document.body.classList.add('authLocked');if(typeof syncAccountStyle==='function')syncAccountStyle();document.getElementById('loginGate').classList.add('hidden');renderProfiles();tone('tap');if(deviceUser&&members.some(m=>m.id===deviceUser)){setTimeout(()=>loginAs(deviceUser),0)}else{document.getElementById('loginGate').classList.remove('hidden')}}
+async function logout(){if(typeof detachFamilyPush==='function')await detachFamilyPush();await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;document.body.classList.add('authLocked');if(typeof syncAccountStyle==='function')syncAccountStyle();document.getElementById('loginGate').classList.add('hidden');renderProfiles();tone('tap');if(deviceUser&&members.some(m=>m.id===deviceUser)){setTimeout(()=>loginAs(deviceUser),0)}else{document.getElementById('loginGate').classList.remove('hidden')}}
 function changeDeviceUser(){document.body.classList.add('authLocked');if(typeof syncAccountStyle==='function')syncAccountStyle();LS.removeItem('fh_device_user');deviceUser=null;pendingUser=null;document.getElementById('pinModal').classList.remove('show');document.getElementById('loginGate').classList.remove('hidden');renderProfiles();tone('tap')}
 function applyRole(){
  if(!currentUser)return;
@@ -1415,6 +1427,7 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
 }
 </script>
 
+<script src="./push-settings.js"></script>
 <script src="./user-style.js"></script>
 <script src="./data-format.js"></script>
 <script src="./data-management.js"></script>
