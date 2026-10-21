@@ -25,3 +25,51 @@ body.dark[data-palette]:not([data-palette=navy]) th{background:var(--style-deep)
 body[data-palette] .moneyTypeBtn.active{background:var(--accent);border-color:var(--accent);color:#fff}
 body[data-palette] .kidWallet{background:linear-gradient(135deg,var(--accent),var(--navy));color:#fff}
 body.dark[data-palette] .taskFilter:not(.active),body.dark[data-palette] .taskOwnerBtn:not(.active),body.dark[data-palette] .moneyTypeBtn:not(.active){background:var(--card);color:var(--ink)}
+
+/* Shared palette tokens cover every app surface, including dark mode and dialogs. */
+body[data-palette=navy]{--style-primary:#17375c;--style-deep:#112540;--style-accent:#e4c986;--style-soft:#f4f6fa;--style-ink:#152b49;--style-night:#0d1b2e;--style-nightcard:#162a43}
+body[data-palette]{--surface-on:#fff;--surface-muted:#e7edf5;--surface-line:#ffffff40;--style-border:color-mix(in srgb,var(--style-primary) 22%,white);--style-shadow:color-mix(in srgb,var(--style-deep) 14%,transparent);accent-color:var(--style-primary);color-scheme:light}
+body.dark[data-palette]{color-scheme:dark;--style-border:color-mix(in srgb,var(--style-accent) 30%,var(--style-nightcard))}
+body[data-palette] .side,body[data-palette] .hero,body[data-palette] .kidWallet{background:linear-gradient(135deg,var(--style-primary),var(--style-deep));border-color:var(--style-accent);color:var(--surface-on)}
+body[data-palette] .hero:after{background:color-mix(in srgb,var(--style-accent) 10%,transparent)}
+body[data-palette] .streak{background:color-mix(in srgb,var(--style-accent) 12%,transparent);color:var(--style-accent);border-color:color-mix(in srgb,var(--style-accent) 40%,transparent)}
+body[data-palette] .nav button{color:var(--surface-muted)}
+body[data-palette] .nav button.active{background:var(--style-accent);color:var(--style-deep)}
+body[data-palette] .nav button.active:after{background:var(--style-deep)}
+body[data-palette] .card,body[data-palette] .modalbox,body[data-palette] .modalCard,body[data-palette] .monthStrip,body[data-palette] .monthSection{background:var(--card);color:var(--ink);border-color:var(--style-border)}
+body[data-palette] .metric,body[data-palette] .metric:nth-child(n),body[data-palette] .goalCard{background:linear-gradient(140deg,var(--card),color-mix(in srgb,var(--style-soft) 50%,var(--card)));border-color:var(--style-border);border-top-color:var(--style-primary);box-shadow:0 7px 25px var(--style-shadow)}
+body.dark[data-palette] .metric,body.dark[data-palette] .metric:nth-child(n),body.dark[data-palette] .goalCard{background:var(--card)}
+body[data-palette] .metric .iconbubble,body[data-palette] .goalCard .goalIcon,body[data-palette] .familyAvatar,body[data-palette] .avatar{background:var(--style-soft);color:var(--style-primary);border-color:var(--style-accent)}
+body[data-palette] .primary,body[data-palette] .fab{background:linear-gradient(125deg,var(--style-primary),var(--style-deep));color:#fff;border-color:var(--style-primary);box-shadow:0 5px 14px var(--style-shadow)}
+body[data-palette] .ghost,body[data-palette] .btn:not(.primary):not(.danger),body[data-palette] .taskFilter,body[data-palette] .taskOwnerBtn,body[data-palette] .moneyTypeBtn,body[data-palette] .pinPad button{background:var(--card);color:var(--ink);border-color:var(--line)}
+body[data-palette] .taskFilter.active,body[data-palette] .taskOwnerBtn.active,body[data-palette] .moneyTypeBtn.active{background:var(--style-primary)!important;border-color:var(--style-accent)!important;color:#fff!important}
+body[data-palette] .goalProgress,body[data-palette] .bar{background:var(--line)}
+body[data-palette] .goalProgress i,body[data-palette] .bar i{background:linear-gradient(90deg,var(--style-primary),var(--style-accent))}
+body[data-palette] .progressRing{--ring:var(--style-primary)!important;background:conic-gradient(var(--style-primary) calc(var(--p)*1%),var(--line) 0)}
+body[data-palette] .progressRing:before{background:var(--card)}
+body[data-palette] .pill,body[data-palette] .taskStatus,body[data-palette] .ownerTag{background:var(--style-soft);color:var(--style-ink)}
+body.dark[data-palette] .pill,body.dark[data-palette] .taskStatus,body.dark[data-palette] .ownerTag{background:var(--style-deep);color:var(--style-accent)}
+body[data-palette] input,body[data-palette] select,body[data-palette] textarea{background:var(--card);color:var(--ink);border-color:var(--line)}
+body[data-palette] input:focus,body[data-palette] select:focus,body[data-palette] textarea:focus,body[data-palette] button:focus-visible,body[data-palette] summary:focus-visible{outline-color:var(--style-accent)}
+body[data-palette] .avatarChoice.active{outline-color:var(--style-accent)}
+body[data-palette] th{background:var(--style-soft);color:var(--style-ink)}
+body.dark[data-palette] th{background:var(--style-deep);color:#fff}
+body[data-palette] .heroArt img,body[data-palette] .familyHug,body[data-palette] .loginFamily{background:var(--style-deep);border-color:var(--style-accent)}
+body[data-palette] #intro{background:radial-gradient(ellipse at 50% 35%,var(--style-primary),var(--style-deep) 65%)}
+body[data-palette] #intro .introFloatIcon,body[data-palette] .introControls button{background:var(--style-deep);border-color:var(--style-accent);color:#fff}
+body[data-palette] #intro .introTitle3d span{color:var(--style-accent)}
+body[data-palette] #intro .introTitle3d{text-shadow:0 2px 0 var(--style-primary),0 12px 25px #0006}
+body[data-palette] #intro .introGlowA,body[data-palette] .familyAura{background:var(--style-accent)}
+body[data-palette] #intro .introGlowB{background:var(--style-primary)}
+body[data-palette] #intro .introBtn{background:var(--style-accent);color:var(--style-deep);box-shadow:0 5px 0 var(--style-primary),0 18px 35px #0005}
+body[data-palette] .familyCaption{background:var(--style-deep);border-color:var(--style-accent);color:#fff}
+body[data-palette] .revealPortrait{border-color:var(--style-accent)}
+body[data-palette].authLocked,body[data-palette].authLocked #pinModal,body[data-palette] .loginGate{background:radial-gradient(ellipse at top,var(--style-primary),var(--style-deep))}
+body[data-palette] #pinModal .modalbox,body[data-palette] .loginCard{background:var(--card)!important;color:var(--ink);border-color:var(--style-accent)!important}
+body[data-palette] #pinTitle,body[data-palette] .loginLogo h1{color:var(--ink)}
+body[data-palette] #pinHint,body[data-palette] #chooseText,body[data-palette] .profileRole{color:var(--muted)}
+body[data-palette] #cloudPassword{background:var(--card)!important;color:var(--ink)!important;border-color:var(--style-accent)!important}
+body[data-palette] #cloudLoginBtn{background:var(--style-primary)!important;color:#fff!important;border-color:var(--style-accent)}
+body[data-palette] #pinModal .ghost,body[data-palette] .loginCard .ghost,body[data-palette] .profileBtn{background:var(--card)!important;color:var(--ink)!important;border-color:var(--style-border)}
+body[data-palette] .profileBtn:hover,body[data-palette] #pinModal .ghost:hover{background:var(--bg)!important;border-color:var(--style-accent)}
+body[data-palette] .pinDots i.on{background:var(--style-primary)}
