@@ -891,7 +891,7 @@ async function finishLogin(){
  const pushPage=new URL(location.href).searchParams.get('notification');if(['finance','tasks','goals'].includes(pushPage))document.querySelector('.nav button[data-page="'+pushPage+'"]')?.click();
 }
 function cancelPin(){document.getElementById('pinModal').classList.remove('show');pendingUser=null;pinEntry=''}
-async function logout(){if(typeof detachFamilyPush==='function')await detachFamilyPush();await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;document.body.classList.add('authLocked');if(typeof syncAccountStyle==='function')syncAccountStyle();document.getElementById('loginGate').classList.add('hidden');renderProfiles();tone('tap');if(deviceUser&&members.some(m=>m.id===deviceUser)){setTimeout(()=>loginAs(deviceUser),0)}else{document.getElementById('loginGate').classList.remove('hidden')}}
+async function logout(){if(typeof FHPersonal!=='undefined')FHPersonal.reset();if(typeof detachFamilyPush==='function')await detachFamilyPush();await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;document.body.classList.add('authLocked');if(typeof syncAccountStyle==='function')syncAccountStyle();document.getElementById('loginGate').classList.add('hidden');renderProfiles();tone('tap');if(deviceUser&&members.some(m=>m.id===deviceUser)){setTimeout(()=>loginAs(deviceUser),0)}else{document.getElementById('loginGate').classList.remove('hidden')}}
 function changeDeviceUser(){document.body.classList.add('authLocked');if(typeof syncAccountStyle==='function')syncAccountStyle();LS.removeItem('fh_device_user');deviceUser=null;pendingUser=null;document.getElementById('pinModal').classList.remove('show');document.getElementById('loginGate').classList.remove('hidden');renderProfiles();tone('tap')}
 function applyRole(){
  if(!currentUser)return;
@@ -1076,6 +1076,7 @@ async function loadCloudData(){
   if(!trr.error) tasks=(trr.data||[]).map(x=>({id:x.id,title:x.title,person:memberKeyFromRow(x.assigned_to||x.assignee_id||x.member_id),date:(x.due_date||x.date||x.created_at||'').slice(0,10),done:!!(x.done??x.is_done??x.completed)}));
   if(!gr.error) goals=(gr.data||[]).map(x=>({id:x.id,nameAr:x.title||'',nameEn:x.title||'',target:Number(x.target_amount??x.target??0),saved:Number(x.saved_amount??x.saved??0)+finance.filter(t=>t.type==='saving'&&t.cat.startsWith('[goal:'+x.id+'] ')).reduce((sum,t)=>sum+t.amount,0),icon:x.icon||'🎯'}));
   restoreActiveMonth();
+  if(typeof FHPersonal!=='undefined')await FHPersonal.sync();
   return true;
  }catch(e){console.error('loadCloudData exception',e);showToast((lang==='ar'?'تعذر تحميل البيانات السحابية: ':'Cloud load failed: ')+(e?.message||e));return false}
 }
@@ -1432,6 +1433,7 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
 </script>
 
 <script src="./push-settings.js"></script>
+<script src="./personal-plan.js"></script>
 <script src="./user-style.js"></script>
 <script src="./data-format.js"></script>
 <script src="./data-management.js"></script>
