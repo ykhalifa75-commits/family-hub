@@ -1,4 +1,4 @@
-const CACHE = 'family-hub-v27-personal-cycling';
+const CACHE = 'family-hub-v28-detailed-notifications';
 const CORE = ['./personal-plan.js', './family-fun.js', './family-fun.css', './push-settings.js', './user-style.js', './user-style.css', './data-format.js', './data-management.js', './assets/family-pixar-final.webp', './', './index.html', './months.js', './month-controls.js', './vendor/supabase-2.118.0.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './family-hub-apple-v14.png', './apple-touch-icon-precomposed.png'];
 const CORE_URLS = new Set(CORE.map(path => new URL(path, self.location.href).href));
 self.addEventListener('install', event => {
@@ -31,15 +31,19 @@ self.addEventListener('fetch', event => {
   }));
 });
 
-// Push payloads never choose arbitrary titles, URLs or lock-screen financial details.
+// Preview text comes from authenticated server-generated family events. Navigation stays allowlisted.
 self.addEventListener('push',event=>{
  let payload={};try{payload=event.data?.json()||{}}catch{}
  const titles={personal_reminder:'🔒 وقت خطتك الشخصية / Personal reminder',task_completed_all:'👏 مهمة خلصت / Task completed',finance_activity:'💰 حركة مالية جديدة / Financial activity',task_activity:'✅ تحديث في مهام الأسرة / Family task update',goal_activity:'🎯 تحديث في أهداف الأسرة / Family goal update',task_assigned:'✅ عندك مهمة جديدة / New task',task_reminder:'⏰ تذكير بمهمة / Task reminder',task_completed:'👏 مهمة خلصت / Task completed',goal_contribution:'💻 مساهمة لهدف الكمبيوتر / Computer goal contribution',goal_completed:'🎉 هدف الكمبيوتر اكتمل / Computer goal completed'};
  const kind=Object.hasOwn(titles,payload.kind)?payload.kind:'update';
  const page=kind==='personal_reminder'?'personal':kind==='finance_activity'?'finance':kind.startsWith('goal_')?'goals':'tasks';
  const eventId=String(payload.event_id||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80);
- event.waitUntil(self.registration.showNotification(titles[kind]||'Family Hub — تحديث جديد',{
-  body:'افتح التطبيق لمتابعة التفاصيل / Open the app for details',icon:new URL('./icon-192.png',self.registration.scope).href,
+ const previewText=(value,limit)=>typeof value==='string'?value.replace(/[\u0000-\u001f\u007f]/g,' ').trim().slice(0,limit):'';
+ const personal=kind==='personal_reminder';
+ const title=(!personal&&previewText(payload.title,100))||titles[kind]||'Family Hub — تحديث جديد';
+ const body=(!personal&&previewText(payload.body,350))||'افتح التطبيق لمتابعة التفاصيل / Open the app for details';
+ event.waitUntil(self.registration.showNotification(title,{
+  body,icon:new URL('./icon-192.png',self.registration.scope).href,
   tag:eventId?'family-hub-'+eventId:undefined,data:{page},dir:'auto'
  }));
 });
