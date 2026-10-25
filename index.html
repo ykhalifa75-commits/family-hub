@@ -644,9 +644,9 @@ body.motionPaused #intro .familyPortraits{display:none!important}body.motionPaus
  <p>فعّل الإشعارات لكل حساب على جهازه. على الآيفون لازم تضيف التطبيق للشاشة الرئيسية وتفتحه منها.<br>Enable on each account and device. On iPhone, install on the Home Screen and open from its icon.</p>
  <p id="pushStatus" role="status" aria-live="polite" class="muted"></p>
  <div style="display:grid;gap:16px;margin:20px 0">
- <label><input type="checkbox" id="pushTasks" checked style="width:auto"> ✅ مهامي وتذكيرات مواعيدها / My tasks & reminders</label>
- <label><input type="checkbox" id="pushCompleted" checked style="width:auto"> 👏 إتمام مهام الأولاد — للوالدين / Kids' completed tasks — parents</label>
- <label><input type="checkbox" id="pushGoals" checked style="width:auto"> 💻 مساهمات واكتمال هدف الكمبيوتر / Computer goal progress</label>
+ <label><input type="checkbox" id="pushTasks" checked style="width:auto"> ✅ حركات مهام الأسرة والتذكيرات / Family tasks & reminders</label>
+ <label><input type="checkbox" id="pushCompleted" checked style="width:auto"> 👏 إتمام مهام أي فرد — لكل الأسرة / Family task completions</label>
+ <label><input type="checkbox" id="pushGoals" checked style="width:auto"> 💰 المعاملات المالية والتحويش والأهداف — لكل الأسرة / Family finances, savings & goals</label>
  </div><div class="monthActions"><button type="button" class="btn primary" id="pushEnableBtn" data-push-action onclick="enableFamilyPush()" disabled>تفعيل / حفظ اختياراتي</button><button type="button" class="btn ghost" data-push-action onclick="testFamilyPush()" disabled>اختبار على جهازي / Test my device</button><button type="button" class="btn ghost" data-push-action onclick="disableFamilyPush()" disabled>إيقاف على الجهاز / Disable</button></div>
  <p class="muted">الإشعار لا يعرض تفاصيل مالية على شاشة القفل. إيقاف نوع إشعار لا يغيّر بيانات الأسرة.<br>No financial details on the lock screen. Preferences do not change family data.</p>
 </div></div>
@@ -888,7 +888,7 @@ async function finishLogin(){
  document.body.classList.remove('authLocked');
  if(typeof loadUserStyle==='function')await loadUserStyle();
  tone('success');applyRole();render();startRealtime();
- const pushPage=new URL(location.href).searchParams.get('notification');if(['tasks','goals'].includes(pushPage))document.querySelector('.nav button[data-page="'+pushPage+'"]')?.click();
+ const pushPage=new URL(location.href).searchParams.get('notification');if(['finance','tasks','goals'].includes(pushPage))document.querySelector('.nav button[data-page="'+pushPage+'"]')?.click();
 }
 function cancelPin(){document.getElementById('pinModal').classList.remove('show');pendingUser=null;pinEntry=''}
 async function logout(){if(typeof detachFamilyPush==='function')await detachFamilyPush();await sb.auth.signOut();LS.removeItem('fh_user');currentUser=null;document.body.classList.add('authLocked');if(typeof syncAccountStyle==='function')syncAccountStyle();document.getElementById('loginGate').classList.add('hidden');renderProfiles();tone('tap');if(deviceUser&&members.some(m=>m.id===deviceUser)){setTimeout(()=>loginAs(deviceUser),0)}else{document.getElementById('loginGate').classList.remove('hidden')}}
