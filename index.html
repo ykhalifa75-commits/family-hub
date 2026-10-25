@@ -888,6 +888,7 @@ async function finishLogin(){
  document.body.classList.remove('authLocked');
  if(typeof loadUserStyle==='function')await loadUserStyle();
  tone('success');applyRole();render();startRealtime();
+ if(new URL(location.href).searchParams.get('notification')==='personal'&&typeof FHPersonal!=='undefined')await FHPersonal.open();
  const pushPage=new URL(location.href).searchParams.get('notification');if(['finance','tasks','goals'].includes(pushPage))document.querySelector('.nav button[data-page="'+pushPage+'"]')?.click();
 }
 function cancelPin(){document.getElementById('pinModal').classList.remove('show');pendingUser=null;pinEntry=''}
